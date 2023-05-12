@@ -1,13 +1,14 @@
-# 大麦网抢票脚本
+# 大麦辅助 - 抢票脚本
 
-基于 [AnTi-anti/damai_ticket](https://github.com/AnTi-anti/damai_ticket) 开源版本进行修改
-
-> 2023.03.04 修改使抢票脚本对部分演唱会有效
+> 2023.05.05 修改使抢票脚本对部分演唱会有效
 > 
-> 2023.03.20 对应页面更新了class_name, 但是出现新机制触发机器验证无法完成下单
+> 2023.05.09 对应页面更新了class_name, 但是出现新机制触发机器验证无法完成下单
 >
-> 2023.04.27 增加日期选择
+> 2023.05.12 增加日期选择
 
+## 依赖
+- selenium
+>pip install selenium 
 
 ## 配置文件
 
@@ -36,7 +37,7 @@
     "viewer_person": [
         2
     ],
-    "driver_path": "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver2.exe",
+    "driver_path": "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe",
     "damai_url": "https://www.damai.cn/",
     "target_url": "https://m.damai.cn/damai/detail/item.html?itemId=708250808776&spm=a2o71.home.snatch_ticket.item&from=appshare&sqm=dianying.h5.unknown.value.hlw_a2o71_28004194",
     "comment": {
