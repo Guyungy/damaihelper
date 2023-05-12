@@ -1,0 +1,372 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>订单确认页</title>
+    <meta content=yes name=apple-mobile-web-app-capable>
+    <meta content=yes name=apple-touch-fullscreen>
+    <meta content="telephone=no,email=no" name=format-detection>
+    <meta charset=UTF-8>
+    <meta name=spm-id content=a2o71>
+    <meta name=aplus-auto-exp-visible content=0.5>
+    <meta name=aplus-auto-exp-duration content=500>
+    <meta name=aplus-auto-exp content='[{"logkey":"/damai_m.confirm.couponlayer.exp","tag":".discount__list__coupon_item_spm","filter":"data-log"}]'>
+   
+    <script>!function(){var e=document.createElement("meta");e.name="viewport",e.content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no";var a=navigator.userAgent.toLowerCase().match(/cpu iphone os (.*?) like mac os/);a&&9<Number(a[1].split("_")[0])&&(e.content+=",viewport-fit=cover"),document.head.appendChild(e)}(),window.__armsConfig={pid:"cbzip5arh8@b5c351609900e8c",sample:1,page:"a2o71.orderconfirm"}</script>
+    <script>try{window.__tpp_start=window.performance.timing.fetchStart||+new Date}catch(t){window.__tpp_start=+new Date}window.__tpp_perf_fcp=+new Date-window.__tpp_start</script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: PingFangSC-Regular;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body,
+      #app {
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+      }
+
+      input,
+      textarea {
+        -webkit-user-select: auto;
+        margin: 0px;
+        padding: 0px;
+        outline: none;
+      }
+
+      [id^="confirmOrder_"] {
+        min-height: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 45vmin;
+        padding-bottom: calc(45vmin + constant(safe-area-inset-bottom));
+        padding-bottom: calc(45vmin + env(safe-area-inset-bottom));
+      }
+
+      [id^="dmOrderSubmitBlock_DmOrderSubmitBlock"] {
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        padding-bottom: constant(safe-area-inset-bottom);
+        padding-bottom: env(safe-area-inset-bottom);
+        background: #ffffff;
+      }
+
+      [id="dmViewerBlock_DmViewerBlock"]::after {
+        content: "";
+        margin: 9px 21px;
+        border-bottom: 0.5px solid #e8e8e8;
+        height: 0.5px;
+      }
+
+      [id="dmDeliveryWayBlock_DmDeliveryWayBlock"]::after {
+        content: "";
+        position: relative;
+        margin: 9px 21px;
+        border-bottom: 0.5px solid #e8e8e8;
+        height: 0.5px;
+      }
+
+      [id^="order_"]::after {
+        content: "";
+        position: relative;
+        margin: 9px 21px;
+        border-bottom: 0.5px solid #e8e8e8;
+        height: 0.5px;
+      }
+
+      [id="dmContactBlock_DmContactBlock"]::after {
+        content: "";
+        position: relative;
+        margin: 9px 21px;
+        border-bottom: 0.5px solid #e8e8e8;
+        height: 0.5px;
+      }
+
+      [id^="confirmOrder_"] > div:nth-last-child(2)::after {
+        display: none;
+      }
+
+      [data-tpl-id^="dmEnsure_"]
+        > div:nth-last-child(1)
+        > div:nth-last-child(2)
+        > div:nth-last-child(2) {
+        overflow: visible !important;
+      }
+
+      [data-tpl-id^="dmEnsure_"]
+        > div:nth-last-child(1)
+        > div:nth-last-child(2)
+        > div:nth-last-child(2)
+        > div
+        > div
+        ::after {
+        content: "·";
+      }
+
+      [data-tpl-id^="dmEnsure_"]
+        > div:nth-last-child(1)
+        > div:nth-last-child(2)
+        > div:nth-last-child(2)
+        > div:nth-last-child(1)
+        > div
+        ::after {
+        content: "";
+      }
+
+      [data-tpl-id^="dmNewProtocol_"] .list-item span {
+        line-height: 1.4!important;
+      }
+
+      [data-tpl-id^="dmNewProtocol_"] div {
+        margin-top: 0!important;
+      }
+
+      .loading-container {
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: -webkit-flex;
+        -webkit-justify-content: center;
+        -webkit-align-items: center;
+      }
+
+      .loading_item {
+        display: block;
+        width: 16vmin;
+        height: 16vmin;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: -webkit-flex;
+        -webkit-justify-content: center;
+        -webkit-align-items: center;
+      }
+
+      .loading_item_crl {
+        position: absolute;
+        height: 8vmin;
+        animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
+        -webkit-animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
+      }
+
+      .loading_item_crl:before {
+        content: "";
+        display: block;
+        margin: 0 auto;
+        width: 0.6vmin;
+        height: 2.5vmin;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 5px;
+      }
+
+      .loading_item1 {
+        animation-delay: -0.1s;
+        -webkit-animation-delay: -0.1s;
+        transform: rotate(-30deg);
+        -webkit-transform: rotate(-30deg);
+      }
+
+      .loading_item2 {
+        animation-delay: -0.2s;
+        -webkit-animation-delay: -0.2s;
+        transform: rotate(-60deg);
+        -webkit-transform: rotate(-60deg);
+      }
+
+      .loading_item3 {
+        animation-delay: -0.3s;
+        -webkit-animation-delay: -0.3s;
+        transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+      }
+
+      .loading_item4 {
+        animation-delay: -0.4s;
+        -webkit-animation-delay: -0.4s;
+        transform: rotate(-120deg);
+        -webkit-transform: rotate(-120deg);
+      }
+
+      .loading_item5 {
+        animation-delay: -0.5s;
+        -webkit-animation-delay: -0.5s;
+        transform: rotate(-150deg);
+        -webkit-transform: rotate(-150deg);
+      }
+
+      .loading_item6 {
+        animation-delay: -0.6s;
+        -webkit-animation-delay: -0.6s;
+        transform: rotate(-180deg);
+        -webkit-transform: rotate(-180deg);
+      }
+
+      .loading_item7 {
+        animation-delay: -0.7s;
+        -webkit-animation-delay: -0.7s;
+        transform: rotate(-210deg);
+        -webkit-transform: rotate(-210deg);
+      }
+
+      .loading_item8 {
+        animation-delay: -0.8s;
+        -webkit-animation-delay: -0.8s;
+        transform: rotate(-240deg);
+        -webkit-transform: rotate(-240deg);
+      }
+
+      .loading_item9 {
+        animation-delay: -0.9s;
+        -webkit-animation-delay: -0.9s;
+        transform: rotate(-270deg);
+        -webkit-transform: rotate(-270deg);
+      }
+
+      .loading_item10 {
+        animation-delay: -1s;
+        -webkit-animation-delay: -1s;
+        transform: rotate(-300deg);
+        -webkit-transform: rotate(-300deg);
+      }
+
+      .loading_item11 {
+        animation-delay: -1.1s;
+        -webkit-animation-delay: -1.1s;
+        transform: rotate(-330deg);
+        -webkit-transform: rotate(-330deg);
+      }
+
+      .loading_item12 {
+        animation-delay: -1.2s;
+        -webkit-animation-delay: -1.2s;
+        transform: rotate(-360deg);
+        -webkit-transform: rotate(-360deg);
+      }
+
+      @keyframes sk-circleFadeDelay {
+        0%,
+        39%,
+        100% {
+          opacity: 0;
+        }
+
+        40% {
+          opacity: 1;
+        }
+      }
+
+      @-webkit-keyframes sk-circleFadeDelay {
+        0%,
+        39%,
+        100% {
+          opacity: 0;
+        }
+
+        40% {
+          opacity: 1;
+        }
+      }
+      .haiawng-refund .middle-content {
+        line-height: 1.8;
+      }
+      .haiawng-refund .fs_12 {
+        font-size: 12px;
+      }
+      .haiawng-refund .color_666 {
+        color: #666;
+      }
+      .haiawng-refund table {
+        width: 100%;
+        background: #fafafa;
+        font-size: 12px;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-style: hidden;
+      }
+      .haiawng-refund .desc,
+      .haiawng-refund .table {
+        margin-bottom: 12px;
+      }
+      .haiawng-refund table tr {
+        height: 28px;
+      }
+      .haiawng-refund table tbody td {
+        border: 1px solid #d7d7d7;
+        padding-left: 12px;
+      }
+    </style>
+
+    
+    <script>"function"!=typeof Object.assign&&Object.defineProperty(Object,"assign",{value:function(t,e){"use strict";if(null==t)throw new TypeError("Cannot convert undefined or null to object");for(var r=Object(t),n=1;n<arguments.length;n++){var o=arguments[n];if(null!=o)for(var i in o)Object.prototype.hasOwnProperty.call(o,i)&&(r[i]=o[i])}return r},writable:!0,configurable:!0}),Array.prototype.includes||Object.defineProperty(Array.prototype,"includes",{value:function(t,e){if(null==this)throw new TypeError('"this" is null or not defined');var r=Object(this),n=r.length>>>0;if(0===n)return!1;for(var o,i,s=0|e,u=Math.max(0<=s?s:n-Math.abs(s),0);u<n;){if((o=r[u])===(i=t)||"number"==typeof o&&"number"==typeof i&&isNaN(o)&&isNaN(i))return!0;u++}return!1}}),function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t.ES6Promise=e()}(this,function(){"use strict";function a(t){return"function"==typeof t}function e(){var t=setTimeout;return function(){return t(r,1)}}function r(){for(var t=0;t<O;t+=2)(0,Y[t])(Y[t+1]),Y[t]=void 0,Y[t+1]=void 0;O=0}function u(t,e){var r=arguments,n=this,o=new this.constructor(f);void 0===o[q]&&b(o);var i,s=n._state;return s?(i=r[s-1],P(function(){return _(s,o,i,n._result)})):v(n,o,t,e),o}function c(t){if(t&&"object"==typeof t&&t.constructor===this)return t;var e=new this(f);return h(e,t),e}function f(){}function s(t){try{return t.then}catch(t){return L.error=t,L}}function l(t,e,r){var s,n,o,i;e.constructor===t.constructor&&r===u&&e.constructor.resolve===c?(o=t,(i=e)._state===D?p(o,i._result):i._state===K?d(o,i._result):v(i,void 0,function(t){return h(o,t)},function(t){return d(o,t)})):r===L?(d(t,L.error),L.error=null):void 0===r?p(t,e):a(r)?(s=e,n=r,P(function(o){var i=!1,t=function(t,e,r,n){try{t.call(e,function(t){i||(i=!0,s!==t?h(o,t):p(o,t))},function(t){i||(i=!0,d(o,t))})}catch(t){return t}}(n,s,0,0,o._label);!i&&t&&(i=!0,d(o,t))},t)):p(t,e)}function h(t,e){var r;t===e?d(t,new TypeError("You cannot resolve a promise with itself")):(r=typeof e,null===e||"object"!==r&&"function"!==r?p(t,e):l(t,e,s(e)))}function n(t){t._onerror&&t._onerror(t._result),y(t)}function p(t,e){t._state===F&&(t._result=e,t._state=D,0!==t._subscribers.length&&P(y,t))}function d(t,e){t._state===F&&(t._state=K,t._result=e,P(n,t))}function v(t,e,r,n){var o=t._subscribers,i=o.length;t._onerror=null,o[i]=e,o[i+D]=r,o[i+K]=n,0===i&&t._state&&P(y,t)}function y(t){var e=t._subscribers,r=t._state;if(0!==e.length){for(var n=void 0,o=void 0,i=t._result,s=0;s<e.length;s+=3)n=e[s],o=e[s+r],n?_(r,n,o,i):o(i);t._subscribers.length=0}}function t(){this.error=null}function _(t,e,r,n){var o=a(r),i=void 0,s=void 0,u=void 0,c=void 0;if(o){if((i=function(t,e){try{return t(e)}catch(t){return U.error=t,U}}(r,n))===U?(c=!0,s=i.error,i.error=null):u=!0,e===i)return void d(e,new TypeError("A promises callback cannot return that same promise."))}else i=n,u=!0;e._state!==F||(o&&u?h(e,i):c?d(e,s):t===D?p(e,i):t===K&&d(e,i))}function b(t){t[q]=W++,t._state=void 0,t._result=void 0,t._subscribers=[]}function o(t,e){this._instanceConstructor=t,this.promise=new t(f),this.promise[q]||b(this.promise),j(e)?(this.length=e.length,this._remaining=e.length,this._result=new Array(this.length),0===this.length?p(this.promise,this._result):(this.length=this.length||0,this._enumerate(e),0===this._remaining&&p(this.promise,this._result))):d(this.promise,new Error("Array Methods must be provided an Array"))}function m(t){this[q]=W++,this._result=this._state=void 0,this._subscribers=[],f!==t&&("function"!=typeof t&&function(){throw new TypeError("You must pass a resolver function as the first argument to the promise constructor")}(),this instanceof m?function(e,t){try{t(function(t){h(e,t)},function(t){d(e,t)})}catch(t){d(e,t)}}(this,t):function(){throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.")}())}var i,w,g,A,j=Array.isArray?Array.isArray:function(t){return"[object Array]"===Object.prototype.toString.call(t)},O=0,E=void 0,S=void 0,P=function(t,e){Y[O]=t,Y[O+1]=e,2===(O+=2)&&(S?S(r):k())},T="undefined"!=typeof window?window:void 0,M=T||{},x=M.MutationObserver||M.WebKitMutationObserver,C="undefined"==typeof self&&"undefined"!=typeof process&&"[object process]"==={}.toString.call(process),N="undefined"!=typeof Uint8ClampedArray&&"undefined"!=typeof importScripts&&"undefined"!=typeof MessageChannel,Y=new Array(1e3),k=void 0;k=C?function(){return process.nextTick(r)}:x?(w=0,g=new x(r),A=document.createTextNode(""),g.observe(A,{characterData:!0}),function(){A.data=w=++w%2}):N?((i=new MessageChannel).port1.onmessage=r,function(){return i.port2.postMessage(0)}):void 0===T&&"function"==typeof require?function(){try{var t=require("vertx");return void 0!==(E=t.runOnLoop||t.runOnContext)?function(){E(r)}:e()}catch(t){return e()}}():e();var q=Math.random().toString(36).substring(16),F=void 0,D=1,K=2,L=new t,U=new t,W=0;return o.prototype._enumerate=function(t){for(var e=0;this._state===F&&e<t.length;e++)this._eachEntry(t[e],e)},o.prototype._eachEntry=function(e,t){var r=this._instanceConstructor,n=r.resolve;if(n===c){var o=s(e);if(o===u&&e._state!==F)this._settledAt(e._state,t,e._result);else if("function"!=typeof o)this._remaining--,this._result[t]=e;else if(r===m){var i=new r(f);l(i,e,o),this._willSettleAt(i,t)}else this._willSettleAt(new r(function(t){return t(e)}),t)}else this._willSettleAt(n(e),t)},o.prototype._settledAt=function(t,e,r){var n=this.promise;n._state===F&&(this._remaining--,t===K?d(n,r):this._result[e]=r),0===this._remaining&&p(n,this._result)},o.prototype._willSettleAt=function(t,e){var r=this;v(t,void 0,function(t){return r._settledAt(D,e,t)},function(t){return r._settledAt(K,e,t)})},m.all=function(t){return new o(this,t).promise},m.race=function(o){var i=this;return new i(j(o)?function(t,e){for(var r=o.length,n=0;n<r;n++)i.resolve(o[n]).then(t,e)}:function(t,e){return e(new TypeError("You must pass an array to race."))})},m.resolve=c,m.reject=function(t){var e=new this(f);return d(e,t),e},m._setScheduler=function(t){S=t},m._setAsap=function(t){P=t},m._asap=P,m.prototype={constructor:m,then:u,catch:function(t){return this.then(null,t)}},m.polyfill=function(){var t=void 0;if("undefined"!=typeof global)t=global;else if("undefined"!=typeof self)t=self;else try{t=Function("return this")()}catch(t){throw new Error("polyfill failed because global object is unavailable in this environment")}var e=t.Promise;if(e){var r=null;try{r=Object.prototype.toString.call(e.resolve())}catch(t){}if("[object Promise]"===r&&!e.cast)return}t.Promise=m},(m.Promise=m).polyfill(),m})</script>
+  </head>
+  <body data-noaplus data-version=0.1.39 data-spm=orderconfirm>
+    <div id=loading class=loading-container>
+      <div style="width: 26vmin;
+          height: 26vmin;
+          border-radius: 5.52px;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          -webkit-box-orient: vertical;
+          flex-direction: column;
+          -webkit-flex-direction: column;
+          -webkit-box-pack: start;
+          justify-content: center;
+          align-items: center;
+          display: -webkit-flex;
+          -webkit-justify-content: center;
+          -webkit-align-items: center;">
+        <div class=loading_item>
+          <div class="loading_item_crl loading_item1"></div>
+          <div class="loading_item_crl loading_item2"></div>
+          <div class="loading_item_crl loading_item3"></div>
+          <div class="loading_item_crl loading_item4"></div>
+          <div class="loading_item_crl loading_item5"></div>
+          <div class="loading_item_crl loading_item6"></div>
+          <div class="loading_item_crl loading_item7"></div>
+          <div class="loading_item_crl loading_item8"></div>
+          <div class="loading_item_crl loading_item9"></div>
+          <div class="loading_item_crl loading_item10"></div>
+          <div class="loading_item_crl loading_item11"></div>
+          <div class="loading_item_crl loading_item12"></div>
+        </div>
+        <div style="font-size: 4.3vmin;
+            text-align: center;
+            color: rgb(255, 255, 255);">
+          数据加载中
+        </div>
+      </div>
+    </div>
+    <div id=app></div>
+
+      
+
+    <script id=assets-tag defer=defer type=text/javascript src=//g.alicdn.com/dmfe/h5-ultron-buy/0.1.39/index.min.js crossorigin></script>
+    <script src=//g.alicdn.com/??/AWSC/AWSC/awsc.js,/sd/baxia-entry/baxiaCommon.js></script>
+    <script>window.baxiaCommon&&window.baxiaCommon.init({checkApiPath:function(i){return-1<i.indexOf("mtop.trade.order.build.h5")||-1<i.indexOf("mtop.trade.order.create.h5")}})</script>
+  </body>
+</html>
