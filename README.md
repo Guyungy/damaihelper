@@ -1,5 +1,7 @@
 # 大麦抢票脚本
 
+最强大麦抢票脚本 
+
 ## 依赖
 - selenium
 >pip install selenium 
