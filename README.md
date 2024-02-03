@@ -4,7 +4,8 @@
 
 ## 依赖
 - selenium
->pip install selenium 
+>pip install selenium
+请安装selenium 4.10.0以下版本
 
 ## 配置文件
 
