@@ -3,8 +3,8 @@
 最强大麦抢票脚本 
 
 ## 依赖
-- selenium
->pip install selenium 
+- selenium (4.10.0以下版本)
+>pip install selenium
 
 ## 配置文件
 
@@ -31,7 +31,7 @@
     "nick_name": "",
     "ticket_num": 1,
     "viewer_person": [
-        2
+        1
     ],
     "driver_path": "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe",
     "damai_url": "https://www.damai.cn/",
