@@ -31,7 +31,7 @@
     "nick_name": "",
     "ticket_num": 1,
     "viewer_person": [
-        2
+        1
     ],
     "driver_path": "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe",
     "damai_url": "https://www.damai.cn/",
