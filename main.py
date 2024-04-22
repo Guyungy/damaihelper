@@ -136,12 +136,21 @@ class Concert(object):
             if con.driver.current_url.find("buy.damai.cn") != -1:
                 break
 
-            # 确认页面刷新成功
+            # 判断页面加载情况 确保页面加载完成
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    lambda driver: driver.execute_script('return document.readyState') == 'complete'
+                )
+            except:
+                raise Exception(u"***Error: 页面加载超时***")
+
+            # 判断root元素是否存在
             try:
                 box = WebDriverWait(self.driver, 3, 0.1).until(
-                    EC.presence_of_element_located((By.ID, 'app')))
+                    EC.presence_of_element_located((By.ID, 'root'))
+                )
             except:
-                raise Exception(u"***Error: 页面刷新出错***")
+                raise Exception(u"***Error: 页面中ID为root的整体布局元素不存在或加载超时***")
 
             try:
                 realname_popup = box.find_elements(
