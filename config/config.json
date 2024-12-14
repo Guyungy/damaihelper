@@ -1,0 +1,217 @@
+{
+    "date": [
+        14,
+        15,
+        16
+    ],
+    "sess": [
+        1,
+        2,
+        3
+    ],
+    "price": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+    ],
+    "real_name": [
+        1,
+        2
+    ],
+    "nick_name": "testUser",
+    "ticket_num": 2,
+    "viewer_person": [
+        2,
+        3
+    ],
+    "driver_path": "C:\\Users\\Documents\\GitHub\\damaihelper\\chromedriver.exe",
+    "damai_url": "https://www.damai.cn/",
+    "target_url": "https://m.damai.cn/damai/detail/item.html?itemId=714001339730",
+    "queue": {
+        "zhoujielun_0403": "https://m.damai.cn/damai/detail/item.html?itemId=717235298514",
+        "liu_dehua_0506": "https://m.damai.cn/damai/detail/item.html?itemId=719283457211"
+    },
+    "auto_buy": true,
+    "auto_buy_time": "08:30:00",
+    "retry_interval": 5,
+    "proxy": {
+        "enabled": true,
+        "proxy_ip": "192.168.1.100",
+        "proxy_port": "8080",
+        "proxy_type": "HTTPS",
+        "proxy_list": [
+            "192.168.1.100:8080",
+            "203.0.113.50:3128",
+            "198.51.100.1:1080"
+        ]
+    },
+    "captcha": {
+        "enabled": true,
+        "method": "OCR",
+        "ocr_service": "baidu"
+    },
+    "accounts": [
+        {
+            "username": "user1@damai.com",
+            "password": "password123",
+            "auto_buy_time": "08:30:00",
+            "viewer_person": [1, 2]
+        },
+        {
+            "username": "user2@damai.com",
+            "password": "password456",
+            "auto_buy_time": "08:35:00",
+            "viewer_person": [3, 4]
+        }
+    ],
+    "platforms": {
+        "damai": {
+            "platform_name": "大麦网",
+            "login": {
+                "method": "scan",
+                "login_url": "https://www.damai.cn/login",
+                "qr_code": "true",
+                "username": "user1@damai.com",
+                "password": "password123"
+            },
+            "ticket_config": {
+                "target_url": "https://m.damai.cn/damai/detail/item.html?itemId=714001339730",
+                "auto_buy": true,
+                "auto_buy_time": "08:30:00",
+                "retry_interval": 5,
+                "price": [1, 2, 3],
+                "sess": [1, 2],
+                "queue": {
+                    "zhoujielun_0403": "https://m.damai.cn/damai/detail/item.html?itemId=717235298514"
+                }
+            },
+            "proxy_settings": {
+                "use_proxy": true,
+                "proxy_ip": "192.168.1.100",
+                "proxy_port": "8080",
+                "proxy_type": "HTTPS"
+            },
+            "captcha": {
+                "enabled": true,
+                "method": "OCR",
+                "ocr_service": "baidu"
+            },
+            "accounts": [
+                {
+                    "username": "user1@damai.com",
+                    "password": "password123",
+                    "auto_buy_time": "08:30:00",
+                    "viewer_person": [1, 2]
+                },
+                {
+                    "username": "user2@damai.com",
+                    "password": "password456",
+                    "auto_buy_time": "08:35:00",
+                    "viewer_person": [3, 4]
+                }
+            ]
+        },
+        "taopiaopiao": {
+            "platform_name": "淘票票",
+            "login": {
+                "method": "sms",
+                "login_url": "https://m.taopiaopiao.com/",
+                "phone_number": "13800000000",
+                "sms_code": "123456"
+            },
+            "ticket_config": {
+                "target_url": "https://m.taopiaopiao.com/damai/detail/item.html?itemId=987654321",
+                "auto_buy": true,
+                "auto_buy_time": "08:45:00",
+                "retry_interval": 10,
+                "price": [1, 2, 3],
+                "sess": [1, 3],
+                "queue": {
+                    "sichuansheng_0504": "https://m.taopiaopiao.com/damai/detail/item.html?itemId=123456789012"
+                }
+            },
+            "proxy_settings": {
+                "use_proxy": true,
+                "proxy_ip": "203.0.113.50",
+                "proxy_port": "3128",
+                "proxy_type": "HTTP"
+            },
+            "captcha": {
+                "enabled": false
+            },
+            "accounts": [
+                {
+                    "username": "user1@taopiaopiao.com",
+                    "password": "password789",
+                    "auto_buy_time": "08:45:00",
+                    "viewer_person": [1, 2]
+                }
+            ]
+        },
+        "binwandao": {
+            "platform_name": "缤玩岛",
+            "login": {
+                "method": "scan",
+                "login_url": "https://m.binwandao.com/login",
+                "qr_code": "true",
+                "username": "user1@binwandao.com",
+                "password": "password321"
+            },
+            "ticket_config": {
+                "target_url": "https://m.binwandao.com/event/detail/itemId=6789012345",
+                "auto_buy": false,
+                "auto_buy_time": "08:30:00",
+                "retry_interval": 7,
+                "price": [2, 3, 4],
+                "sess": [2, 4],
+                "queue": {
+                    "luoji_0605": "https://m.binwandao.com/event/detail/itemId=789012345678"
+                }
+            },
+            "proxy_settings": {
+                "use_proxy": false,
+                "proxy_ip": "",
+                "proxy_port": "",
+                "proxy_type": ""
+            },
+            "captcha": {
+                "enabled": true,
+                "method": "manual",
+                "ocr_service": "none"
+            },
+            "accounts": [
+                {
+                    "username": "user1@binwandao.com",
+                    "password": "password321",
+                    "auto_buy_time": "08:30:00",
+                    "viewer_person": [1, 3]
+                }
+            ]
+        }
+    },
+    "logs": {
+        "enabled": true,
+        "log_file": "logs/error_log.txt",
+        "log_level": "DEBUG"
+    },
+    "notifications": {
+        "enabled": true,
+        "methods": ["email", "sms"],
+        "email": {
+            "smtp_server": "smtp.example.com",
+            "smtp_port": 587,
+            "username": "user@example.com",
+            "password": "emailpassword",
+            "to": "recipient@example.com"
+        },
+        "sms": {
+            "sms_provider": "Twilio",
+            "api_key": "your_twilio_api_key",
+            "to": "+1234567890"
+        }
+    }
+}

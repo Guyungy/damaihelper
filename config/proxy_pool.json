@@ -1,0 +1,53 @@
+{
+    "proxies": [
+      {
+        "ip": "192.168.1.100",
+        "port": "8080",
+        "country": "CN",
+        "status": "active",
+        "type": "HTTP",
+        "last_checked": "2024-12-14T08:10:00"
+      },
+      {
+        "ip": "192.168.1.101",
+        "port": "8080",
+        "country": "CN",
+        "status": "active",
+        "type": "HTTPS",
+        "last_checked": "2024-12-14T08:12:30"
+      },
+      {
+        "ip": "203.0.113.50",
+        "port": "3128",
+        "country": "US",
+        "status": "inactive",
+        "type": "HTTP",
+        "last_checked": "2024-12-14T08:15:00"
+      },
+      {
+        "ip": "203.0.113.51",
+        "port": "3128",
+        "country": "US",
+        "status": "active",
+        "type": "HTTPS",
+        "last_checked": "2024-12-14T08:14:00"
+      },
+      {
+        "ip": "198.51.100.200",
+        "port": "8080",
+        "country": "GB",
+        "status": "active",
+        "type": "HTTP",
+        "last_checked": "2024-12-14T08:13:10"
+      },
+      {
+        "ip": "198.51.100.201",
+        "port": "8080",
+        "country": "GB",
+        "status": "inactive",
+        "type": "HTTPS",
+        "last_checked": "2024-12-14T08:15:20"
+      }
+    ]
+  }
+  

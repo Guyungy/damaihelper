@@ -1,0 +1,5 @@
+selenium==4.1.0
+appium-python-client==2.0.0
+pillow==8.4.0
+apscheduler==3.8.0
+pytesseract==0.3.8
