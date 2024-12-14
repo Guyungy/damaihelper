@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Damaihelper - A Ticket Helper Tool">
+    <meta name="description" content="Damaihelper - 帮助你快速抢票的工具">
     <meta name="author" content="Your Name">
-    <title>Damaihelper | Ticket Helper Tool</title>
+    <title>Damaihelper | 抢票助手</title>
     <style>
-        /* General Reset */
+        /* 页面基本样式 */
         * {
             margin: 0;
             padding: 0;
@@ -15,125 +15,247 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
-            background-color: #f1f1f1;
-            color: #4d4d4d;
-            line-height: 1.6;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #2a3b29; /* 深绿色背景 */
+            color: #66ff66; /* 绿色字体 */
             text-align: center;
+            overflow-x: hidden;
+            margin: 0;
         }
 
         h1, h2 {
-            color: #5d4037;
+            color: #66ff66;
+            text-transform: uppercase;
         }
 
         h1 {
-            font-size: 3.5rem;
-            text-transform: uppercase;
-            font-weight: bold;
+            font-size: 5rem;
             margin-top: 50px;
-            border-bottom: 3px solid #8d6e63;
-            display: inline-block;
-            padding-bottom: 10px;
+            font-weight: bold;
+            animation: typing 4s steps(50) 1s 1 normal both, blinkCaret 0.75s step-end infinite;
         }
 
         h2 {
             font-size: 2rem;
             font-style: italic;
-            margin-bottom: 40px;
-            color: #3e2723;
+            color: #99ff99;
+            margin-bottom: 30px;
         }
 
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: #66ff66;
+            margin: 0 15px;
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #99ff99;
+        }
+
+        /* 内容区 */
         .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 50px;
-            background-color: #fff;
+            width: 90%;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.8);
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 3s ease-in-out;
         }
 
         .image-container {
-            background: #fff url('https://api.star-history.com/svg?repos=Guyungy/damaihelper&type=Date') no-repeat center center;
+            background: url('https://api.star-history.com/svg?repos=Guyungy/damaihelper&type=Date') no-repeat center center;
             background-size: cover;
             padding: 30px;
             border-radius: 10px;
+            height: 300px;
             margin-bottom: 40px;
+            animation: slideIn 2s ease-out;
         }
 
-        .content-section {
-            margin-bottom: 50px;
+        .section {
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 3s forwards;
         }
 
-        .content-section p {
-            font-size: 1.2rem;
-            color: #6d4c41;
+        .section h2 {
+            font-size: 2.5rem;
+            text-align: left;
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+
+        .section p {
+            font-size: 1.3rem;
+            color: #99ff99;
             line-height: 1.8;
+            text-align: left;
         }
 
         .button {
             display: inline-block;
-            background-color: #8d6e63;
-            color: white;
+            background-color: #66cc66;
+            color: #000000;
             font-size: 1.5rem;
             text-decoration: none;
             padding: 15px 40px;
             margin-top: 20px;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: bounce 1s infinite;
         }
 
         .button:hover {
-            background-color: #5d4037;
+            background-color: #44b44b;
+            transform: scale(1.1);
         }
 
         footer {
             font-size: 1rem;
+            color: #99ff99;
             margin-top: 50px;
-            color: #3e2723;
+            animation: fadeIn 5s ease-in-out;
         }
 
-        /* Add vintage background pattern */
-        body {
-            background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+        /* 复古土味动画效果 */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blinkCaret {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* 模拟终端输入效果 */
+        .terminal {
+            font-size: 1.2rem;
+            color: #66ff66;
+            background-color: #1a2b1f;
+            padding: 20px;
+            border-radius: 5px;
+            border: 2px solid #66ff66;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            width: 100%;
+            margin-bottom: 40px;
+            display: inline-block;
+            opacity: 0;
+            animation: terminalInput 5s steps(50) forwards;
+        }
+
+        @keyframes terminalInput {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- 固定导航栏 -->
+    <nav>
+        <a href="#overview">项目介绍</a>
+        <a href="#how-it-works">工作原理</a>
+        <a href="#features">功能特点</a>
+        <a href="#download">下载</a>
+    </nav>
+
+    <!-- 页面标题和输入效果 -->
     <header>
         <h1>Damaihelper</h1>
-        <h2>Your Ultimate Ticket Helper Tool</h2>
+        <h2>帮助你快速抢票的终极工具</h2>
     </header>
 
+    <!-- 页面主体内容 -->
     <div class="container">
         <div class="image-container"></div>
 
-        <section class="content-section">
-            <p>Welcome to <strong>Damaihelper</strong>, your ultimate tool to help you grab tickets quickly and efficiently. Whether you're trying to secure tickets for a concert, a show, or an event, our tool automates the process, saving you time and energy. Built with state-of-the-art technologies and optimized for speed, Damaihelper is the perfect companion for your ticketing needs.</p>
+        <!-- 项目介绍 -->
+        <section id="overview" class="section">
+            <h2>项目介绍</h2>
+            <p>Damaihelper 是一款自动化抢票工具，通过高效的算法和模拟抢票策略，帮助用户快速抢购到热门演出、体育赛事等票务，免去排队烦恼。</p>
         </section>
 
-        <section class="content-section">
-            <h2>How it Works</h2>
-            <p>Simply enter the ticket page URL, set your preferred time to grab tickets, and our software does the rest! No more waiting in long queues or dealing with slow responses from ticketing websites. Our system is designed to get you the best chance at securing the tickets you want, fast!</p>
+        <!-- 如何工作 -->
+        <section id="how-it-works" class="section">
+            <h2>工作原理</h2>
+            <p>用户只需要输入票务页面链接和设定抢票时间，Damaihelper 会在规定时间内自动模拟抢票操作，最大化提高抢票成功率。</p>
         </section>
 
-        <section class="content-section">
-            <h2>Features</h2>
-            <ul style="text-align: left; margin: 0 auto; display: inline-block;">
-                <li>Automated ticket grabbing</li>
-                <li>Proxy support for anonymous browsing</li>
-                <li>Real-time updates and progress tracking</li>
-                <li>Simulated retry mechanism for failed attempts</li>
+        <!-- 功能特点 -->
+        <section id="features" class="section">
+            <h2>功能特点</h2>
+            <ul style="text-align: left; margin: 0 auto; display: inline-block; font-size: 1.3rem;">
+                <li>支持自动化抢票</li>
+                <li>代理支持，匿名浏览</li>
+                <li>实时进度追踪和反馈</li>
+                <li>失败重试机制</li>
             </ul>
         </section>
 
-        <section class="content-section">
-            <a href="https://github.com/Guyungy/damaihelper" class="button">Visit on GitHub</a>
+        <!-- 下载链接 -->
+        <section id="download" class="section">
+            <a href="https://github.com/Guyungy/damaihelper" class="button">立即下载</a>
+        </section>
+
+        <!-- 终端输入模拟 -->
+        <section>
+            <div class="terminal">
+                正在启动... 连接至服务器... 配置环境...
+                <br>
+                连接成功！开始抢票... 🚀
+            </div>
         </section>
     </div>
 
+    <!-- 页脚 -->
     <footer>
-        <p>&copy; 2024 Damaihelper | All rights reserved. Built with love for all ticket hunters.</p>
+        <p>&copy; 2024 Damaihelper | 版权所有 | Built with 🧡 for ticket hunters.</p>
     </footer>
+
 </body>
 </html>
