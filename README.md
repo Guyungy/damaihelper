@@ -1,14 +1,5 @@
 # TicketMaster Pro V4.5 - 企业级票务自动化框架
 [![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
-![Star History](https://api.star-history.com/svg?repos=anonymous-ticket-warrior/ticketmaster-pro&type=Date)
-![GitHub stars](https://img.shields.io/github/stars/anonymous-ticket-warrior/ticketmaster-pro?style=social&label=Stars&logo=github)
-![GitHub forks](https://img.shields.io/github/forks/anonymous-ticket-warrior/ticketmaster-pro?style=social)
-![GitHub issues](https://img.shields.io/github/issues/anonymous-ticket-warrior/ticketmaster-pro)
-![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
-![Dependencies](https://img.shields.io/librariesio/github/anonymous-ticket-warrior/ticketmaster-pro)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Last Commit](https://img.shields.io/github/last-commit/anonymous-ticket-warrior/ticketmaster-pro)
 
 > **2026年票务生态报告**：全球票务平台风控升级，平均开票延迟<200ms，黄牛脚本成功率降至15%。  
 > TicketMaster Pro 不是玩具级脚本，而是**生产级分布式框架**。  
