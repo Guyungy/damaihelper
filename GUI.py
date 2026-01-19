@@ -2,7 +2,14 @@ import json
 import threading
 import time
 import tkinter as tk
+from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
+
+from scripts.mock_dependency_manager import (
+    build_mock_steps,
+    build_report,
+    default_dependencies,
+)
 
 
 class TicketHelperGUI:
@@ -35,6 +42,7 @@ class TicketHelperGUI:
         file_menu = tk.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="保存配置", command=self.save_config)
         file_menu.add_command(label="加载配置", command=self.load_config)
+        file_menu.add_command(label="加载示例配置", command=self.load_demo_config)
         file_menu.add_separator()
         file_menu.add_command(label="退出", command=self.window.quit)
         menu_bar.add_cascade(label="文件", menu=file_menu)
@@ -308,19 +316,7 @@ class TicketHelperGUI:
         deps_frame = tk.LabelFrame(tab, text="依赖清单(每行一条)", bg="#ffffff", padx=10, pady=10)
         deps_frame.grid(row=1, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
         self.dependency_list = tk.Text(deps_frame, height=8, width=70, font=("Arial", 10))
-        self.dependency_list.insert(
-            tk.END,
-            "undetected-chromedriver==2.0\n"
-            "aiohttp>=3.8\n"
-            "httpx>=0.25\n"
-            "scikit-learn\n"
-            "onnxruntime\n"
-            "prometheus-client\n"
-            "grafana-api\n"
-            "celery\n"
-            "redis\n"
-            "pymongo\n",
-        )
+        self.dependency_list.insert(tk.END, "\n".join(default_dependencies()) + "\n")
         self.dependency_list.pack(fill=tk.X)
 
         self.dep_auto_install = tk.BooleanVar(value=True)
@@ -333,6 +329,9 @@ class TicketHelperGUI:
 
         install_button = ttk.Button(tab, text="模拟安装依赖", command=self.simulate_dependency_install)
         install_button.grid(row=2, column=1, padx=10, pady=5, sticky="e")
+
+        export_button = ttk.Button(tab, text="导出模拟安装报告", command=self.export_dependency_report)
+        export_button.grid(row=3, column=1, padx=10, pady=5, sticky="e")
 
     def _add_labeled_entry(self, parent, row, label, default):
         ttk.Label(parent, text=label, background=parent.cget("bg")).grid(
@@ -408,9 +407,9 @@ class TicketHelperGUI:
             self.log("依赖清单为空，已跳过。")
             return
         self.log("开始模拟安装依赖...")
-        for item in dependencies:
-            time.sleep(0.05)
-            self.log(f"已模拟安装: {item}")
+        for step in build_mock_steps(dependencies):
+            time.sleep(0.03)
+            self.log(f"[{step.dependency}] {step.detail}")
         self.log("依赖模拟安装完成。")
 
     def log(self, message):
@@ -521,7 +520,22 @@ class TicketHelperGUI:
         except (json.JSONDecodeError, OSError) as error:
             messagebox.showerror("错误", f"无法读取配置文件: {error}")
             return
+        self.apply_config(config_data)
 
+    def load_demo_config(self):
+        demo_path = Path(__file__).resolve().parent / "config" / "demo_config.json"
+        if not demo_path.exists():
+            messagebox.showerror("错误", "未找到示例配置文件！")
+            return
+        try:
+            with open(demo_path, "r", encoding="utf-8") as file:
+                config_data = json.load(file)
+        except (json.JSONDecodeError, OSError) as error:
+            messagebox.showerror("错误", f"无法读取示例配置文件: {error}")
+            return
+        self.apply_config(config_data)
+
+    def apply_config(self, config_data):
         global_cfg = config_data.get("global", {})
         self.global_log_level.set(global_cfg.get("log_level", "DEBUG"))
         self.global_timezone.delete(0, tk.END)
@@ -613,6 +627,27 @@ class TicketHelperGUI:
         self.dependency_list.delete("1.0", tk.END)
         self.dependency_list.insert(tk.END, "\n".join(dependencies.get("packages", [])))
         self.log("配置已加载！")
+
+    def export_dependency_report(self):
+        dependencies = self._get_text_lines(self.dependency_list)
+        if not dependencies:
+            messagebox.showwarning("提示", "依赖清单为空，无法导出报告。")
+            return
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[("文本文件", "*.txt")],
+            initialfile="mock_install_report.txt",
+        )
+        if not file_path:
+            return
+        report = build_report(dependencies)
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write(report)
+        except OSError as error:
+            messagebox.showerror("错误", f"无法写入报告: {error}")
+            return
+        self.log(f"模拟安装报告已导出: {file_path}")
 
     def show_about(self):
         messagebox.showinfo(
