@@ -1,0 +1,90 @@
+{
+  "version": "4.5",
+  "global": {
+    "log_level": "DEBUG",
+    "timezone": "Asia/Shanghai",
+    "ntp_servers": ["time.google.com", "ntp.aliyun.com"],
+    "dashboard": {
+      "enable": true,
+      "host": "0.0.0.0",
+      "port": 8765
+    }
+  },
+  "accounts": {
+    "acc_primary": {
+      "platform": "taopiaopiao",
+      "credentials": {
+        "mobile": "138xxxxxxxx",
+        "password": "******",
+        "otp_secret": "optional_2fa_key"
+      },
+      "target": {
+        "event_url": "https://example.com/detail/987654321",
+        "priorities": {
+          "date": [1, 2],
+          "session": [1],
+          "price_range": "lowest_to_highest"
+        },
+        "tickets": 2,
+        "viewers": [0, 1]
+      },
+      "proxy": {
+        "type": "socks5",
+        "addr": "user:pass@proxy.example.com:1080",
+        "rotate_interval": "300s"
+      }
+    }
+  },
+  "strategy": {
+    "auto_strike": true,
+    "strike_time": "2026-01-25T12:00:00",
+    "preheat_stages": [5.0, 2.0, 0.5],
+    "ai_enabled": true,
+    "ai_model_path": "models/lstm_onnx.onnx",
+    "max_retries": 180,
+    "retry_backoff": "exponential"
+  },
+  "monitor": {
+    "enable": true,
+    "poll_interval": "1.5s",
+    "triggers": [
+      "price_drop > 10%",
+      "tickets_added > 0",
+      "status_change: soldout -> available"
+    ]
+  },
+  "notification": {
+    "channels": [
+      {"telegram": {"bot_token": "123456:ABC-DEF", "chat_id": "-987654321"}},
+      {
+        "email": {
+          "smtp": "smtp.example.com:465",
+          "user": "alert@domain.com",
+          "pass": "******",
+          "recipients": ["user@domain.com"]
+        }
+      }
+    ]
+  },
+  "plugins": {
+    "custom": ["my_adapter.py", "extra_notifier.py"]
+  },
+  "dependencies": {
+    "auto_install": true,
+    "packages": [
+      "undetected-chromedriver==2.0",
+      "aiohttp>=3.8",
+      "httpx>=0.25",
+      "scikit-learn",
+      "onnxruntime",
+      "prometheus-client",
+      "grafana-api",
+      "celery",
+      "redis",
+      "pymongo",
+      "ray",
+      "uvloop",
+      "orjson"
+    ]
+  }
+}
