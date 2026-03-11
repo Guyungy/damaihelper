@@ -1,4 +1,6 @@
-# damaihelper
+<p align="center">
+  <img src="assets/badge.svg" alt="damaihelper" width="720" />
+</p>
 
 > 说明：本仓库提供基于浏览器自动化的学习/研究示例，用于理解 Web 自动化、GUI 工具封装、日志与配置管理等工程实践。
 > **请在遵守目标平台服务条款与当地法律法规的前提下使用。**
@@ -7,7 +9,7 @@
   <a href="#快速开始">快速开始</a> ·
   <a href="#功能概览">功能概览</a> ·
   <a href="#项目结构">项目结构</a> ·
-  <a href="#常见问题">FAQ</a> ·
+  <a href="#常见问题（faq）">FAQ</a> ·
   <a href="#贡献指南">贡献</a>
 </p>
 
