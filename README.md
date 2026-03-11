@@ -1,5 +1,20 @@
 # damaihelper
 
+<p align="center">
+  <a href="https://github.com/Guyungy/damaihelper/stargazers">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/Guyungy/damaihelper?style=flat-square" />
+  </a>
+  <a href="https://github.com/Guyungy/damaihelper/issues">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/Guyungy/damaihelper?style=flat-square" />
+  </a>
+  <a href="https://github.com/Guyungy/damaihelper/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/Guyungy/damaihelper?style=flat-square" />
+  </a>
+  <a href="https://github.com/Guyungy/damaihelper/commits/main">
+    <img alt="Last commit" src="https://img.shields.io/github/last-commit/Guyungy/damaihelper?style=flat-square" />
+  </a>
+</p>
+
 > 说明：本仓库提供基于浏览器自动化的学习/研究示例，用于理解 Web 自动化、GUI 工具封装、日志与配置管理等工程实践。
 > **请在遵守目标平台服务条款与当地法律法规的前提下使用。**
 
