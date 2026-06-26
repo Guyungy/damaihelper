@@ -1,293 +1,1728 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Damaihelper - 帮助你快速抢票的工具">
-    <meta name="author" content="Your Name">
-    <title>Damaihelper | 抢票助手</title>
-    <style>
-        /* 页面基本样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎟️ DamaiHelper | 全能抢票自动化控制中心 - 极速人机风控绕过系统</title>
+  <meta name="description" content="基于精密授时同步、硬件指纹混淆与生理鼠标轨迹模拟的分布式多账号演出抢票自动化软件。">
+  <meta name="author" content="Guyungy">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #2a3b29;
-            /* 深绿色背景 */
-            color: #66ff66;
-            /* 绿色字体 */
-            text-align: center;
-            overflow-x: hidden;
-            margin: 0;
-        }
+  <style>
+    /* Premium Dark Theme variables */
+    :root {
+      --bg-primary: #060813;
+      --bg-secondary: #0b0f19;
+      --card-bg: rgba(15, 23, 42, 0.55);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #ec4899;
+      --accent-green: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --terminal-bg: #030712;
+      --glow-cyan: rgba(6, 182, 212, 0.15);
+      --glow-purple: rgba(139, 92, 246, 0.12);
+      --input-bg: #0f172a;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+    }
 
-        h1,
-        h2 {
-            color: #66ff66;
-            text-transform: uppercase;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-        h1 {
-            font-size: 5rem;
-            margin-top: 50px;
-            font-weight: bold;
-            animation: typing 4s steps(50) 1s 1 normal both, blinkCaret 0.75s step-end infinite;
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        h2 {
-            font-size: 2rem;
-            font-style: italic;
-            color: #99ff99;
-            margin-bottom: 30px;
-        }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      line-height: 1.6;
+    }
 
-        /* 导航栏 */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            z-index: 1000;
-        }
+    /* Ambient Background Glows */
+    .bg-glow-1 {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%);
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+    }
 
-        nav a {
-            color: #66ff66;
-            margin: 0 15px;
-            font-size: 1.5rem;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
+    .bg-glow-2 {
+      position: absolute;
+      top: 40%;
+      right: -10%;
+      width: 60%;
+      height: 60%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+      filter: blur(120px);
+      z-index: -1;
+      pointer-events: none;
+    }
 
-        nav a:hover {
-            color: #99ff99;
-        }
+    .bg-glow-3 {
+      position: absolute;
+      bottom: -5%;
+      left: 10%;
+      width: 45%;
+      height: 45%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.05) 0%, transparent 70%);
+      filter: blur(110px);
+      z-index: -1;
+      pointer-events: none;
+    }
 
-        /* 内容区 */
-        .container {
-            width: 90%;
-            margin: 100px auto;
-            padding: 30px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 3s ease-in-out;
-        }
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
 
-        .image-container {
-            background: url('https://api.star-history.com/svg?repos=Guyungy/damaihelper&type=Date') no-repeat center center;
-            background-size: cover;
-            padding: 30px;
-            border-radius: 10px;
-            height: 300px;
-            margin-bottom: 40px;
-            animation: slideIn 2s ease-out;
-        }
+    /* Navbar */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(6, 8, 19, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+    }
 
-        .section {
-            margin-bottom: 40px;
-            opacity: 0;
-            animation: fadeInUp 3s forwards;
-        }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .section h2 {
-            font-size: 2.5rem;
-            text-align: left;
-            margin-bottom: 20px;
-            color: #ffcc00;
-        }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text-main);
+    }
 
-        .section p {
-            font-size: 1.3rem;
-            color: #99ff99;
-            line-height: 1.8;
-            text-align: left;
-        }
+    .logo-gradient {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        .button {
-            display: inline-block;
-            background-color: #66cc66;
-            color: #000000;
-            font-size: 1.5rem;
-            text-decoration: none;
-            padding: 15px 40px;
-            margin-top: 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: bounce 1s infinite;
-        }
+    .logo-icon {
+      font-size: 24px;
+      animation: pulsate 2s infinite alternate;
+    }
 
-        .button:hover {
-            background-color: #44b44b;
-            transform: scale(1.1);
-        }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
 
-        footer {
-            font-size: 1rem;
-            color: #99ff99;
-            margin-top: 50px;
-            animation: fadeIn 5s ease-in-out;
-        }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
 
-        /* 复古土味动画效果 */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
+    nav a:hover {
+      color: var(--text-main);
+    }
 
-            100% {
-                opacity: 1;
-            }
-        }
+    .nav-btn {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
 
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+    .nav-btn:hover {
+      opacity: 0.9;
+    }
 
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    /* Hero Section */
+    .hero-section {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 140px 24px 60px 24px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+    }
 
-        @keyframes slideIn {
-            0% {
-                transform: translateY(100%);
-            }
+    .hero-content {
+      text-align: left;
+    }
 
-            100% {
-                transform: translateY(0);
-            }
-        }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
 
-        @keyframes typing {
-            from {
-                width: 0;
-            }
+    .hero-badge span {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-cyan);
+      animation: blink 1.5s infinite;
+    }
 
-            to {
-                width: 100%;
-            }
-        }
+    .hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
 
-        @keyframes blinkCaret {
-            50% {
-                border-color: transparent;
-            }
-        }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        @keyframes bounce {
+    .hero-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      max-width: 580px;
+    }
 
-            0%,
-            100% {
-                transform: translateY(0);
-            }
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
 
-            50% {
-                transform: translateY(-15px);
-            }
-        }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-        /* 终端输入效果 */
-        .terminal {
-            font-size: 1.2rem;
-            color: #66ff66;
-            background-color: #1a2b1f;
-            padding: 20px;
-            border-radius: 5px;
-            border: 2px solid #66ff66;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            width: 100%;
-            margin-bottom: 40px;
-            display: inline-block;
-            opacity: 0;
-            animation: terminalInput 5s steps(50) forwards;
-        }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(6, 182, 212, 0.35);
+    }
 
-        @keyframes terminalInput {
-            0% {
-                width: 0;
-            }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
 
-            100% {
-                width: 100%;
-            }
-        }
-    </style>
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      border-top: 1px solid var(--card-border);
+      padding-top: 30px;
+    }
+
+    .stat-card-mini {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Live Mini Preview */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .preview-card {
+      width: 100%;
+      max-width: 500px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .preview-card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.05), transparent);
+      z-index: -1;
+      border-radius: 16px 16px 0 0;
+      pointer-events: none;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 12px;
+    }
+
+    .preview-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .preview-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .preview-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+    }
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .preview-row span:first-child {
+      color: var(--text-muted);
+    }
+
+    .preview-row span:last-child {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .preview-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-cyan {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+    }
+
+    .preview-chart-container {
+      margin-top: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .chart-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chart-bar-outer {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .chart-bar-inner {
+      height: 100%;
+      width: 82%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      border-radius: 4px;
+    }
+
+    /* Architecture Timing Pipeline */
+    .section-title-wrap {
+      text-align: center;
+      max-width: 700px;
+      margin: 80px auto 48px auto;
+      padding: 0 24px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .pipeline-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    .pipeline-container::after {
+      content: '';
+      position: absolute;
+      top: 35px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .pipeline-node {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .pipeline-node:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .node-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+    }
+
+    .pipeline-node:hybrid .node-num {
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+    }
+
+    .pipeline-node h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .pipeline-node p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Core Features Grid */
+    .features-section {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .feature-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: rgba(139, 92, 246, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      color: var(--accent-purple);
+    }
+
+    .feature-card:nth-child(even) .feature-icon-wrap {
+      background: rgba(6, 182, 212, 0.1);
+      color: var(--accent-cyan);
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Interactive Sandbox Simulator Frame */
+    .sandbox-container {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+
+    .sandbox-frame {
+      border: 1px solid var(--card-border);
+      background: rgba(10, 15, 30, 0.85);
+      border-radius: 16px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sandbox-window-bar {
+      background: #0f1325;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sandbox-window-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .sandbox-window-controls {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .sandbox-main-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 480px;
+    }
+
+    @media (max-width: 900px) {
+      .sandbox-main-body {
+        grid-template-columns: 1fr;
+      }
+      .pipeline-container {
+        grid-template-columns: 1fr;
+      }
+      .pipeline-container::after {
+        display: none;
+      }
+      .features-section {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-section {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .hero-cta {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .features-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sandbox Interactive Workspace */
+    .sandbox-control-panel {
+      padding: 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sandbox-tabs-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 10px;
+    }
+
+    .sandbox-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sandbox-tab-btn.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .sandbox-tab-btn:hover:not(.active) {
+      color: var(--text-main);
+    }
+
+    .sandbox-tab-content {
+      flex: 1;
+      display: none;
+    }
+
+    .sandbox-tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Sub-tabs specific */
+    /* Tab 1: Device Matrix */
+    .device-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .device-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .device-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .device-title {
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .device-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .device-status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    .device-status-dot.syncing {
+      background: var(--warning);
+      box-shadow: 0 0 6px var(--warning);
+    }
+
+    .device-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .device-progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .device-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-cyan);
+      transition: width 0.3s ease;
+    }
+
+    /* Tab 2: Proxy Pool */
+    .proxy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .proxy-table th, .proxy-table td {
+      text-align: left;
+      padding: 10px;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .proxy-table th {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .latency-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .latency-val.good { color: var(--success); }
+    .latency-val.pending { color: var(--text-muted); }
+
+    /* Tab 3: Bezier Curve Canvas */
+    .canvas-container {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    canvas {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #02040a;
+      border-radius: 8px;
+      width: 100%;
+      max-height: 200px;
+    }
+
+    .canvas-status {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Simulation Trigger Block */
+    .sim-action-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 16px;
+    }
+
+    .sim-btn-trigger {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .sim-btn-trigger:hover {
+      opacity: 0.9;
+    }
+
+    .sim-btn-trigger:disabled {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .sim-config-summary {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    /* Sandbox Console Terminal Panel */
+    .sandbox-console-panel {
+      background: var(--terminal-bg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 8px;
+    }
+
+    .console-logs {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 380px;
+      scroll-behavior: smooth;
+    }
+
+    .log-line {
+      line-height: 1.5;
+      word-break: break-all;
+    }
+
+    .log-info { color: #38bdf8; }
+    .log-success { color: var(--success); }
+    .log-warn { color: var(--warning); }
+    .log-err { color: var(--danger); }
+
+    /* Developer Configuration Tabs */
+    .developer-docs-section {
+      max-width: 1100px;
+      margin: 80px auto;
+      padding: 0 24px;
+    }
+
+    .docs-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .docs-tabs-nav {
+      display: flex;
+      background: #0f1325;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .docs-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .docs-tab-btn.active {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--accent-cyan);
+      border-bottom: 2px solid var(--accent-cyan);
+    }
+
+    .docs-tab-content {
+      padding: 24px;
+      background: #060913;
+      display: none;
+    }
+
+    .docs-tab-content.active {
+      display: block;
+    }
+
+    .code-container {
+      position: relative;
+    }
+
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e2e8f0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+    }
+
+    /* Footer */
+    footer {
+      background: #03040b;
+      border-top: 1px solid var(--card-border);
+      padding: 48px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer p {
+      margin-bottom: 12px;
+    }
+
+    footer a {
+      color: var(--text-main);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* Animations & Keyframes */
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 10px currentColor; }
+      100% { transform: scale(1); opacity: 0.9; }
+    }
+
+    @keyframes pulsate {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    /* Custom high-light formatting inside code logs */
+    .keyword { color: #f43f5e; }
+    .string { color: #10b981; }
+    .number { color: #f59e0b; }
+    .comment { color: #64748b; }
+
+  </style>
 </head>
-
 <body>
 
-    <!-- 固定导航栏 -->
-    <nav>
-        <a href="#overview">项目介绍</a>
-        <a href="#how-it-works">工作原理</a>
-        <a href="#features">功能特点</a>
-        <a href="#download">下载</a>
-    </nav>
+  <!-- Floating Ambient background shapes -->
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+  <div class="bg-glow-3"></div>
 
-    <!-- 页面标题和输入效果 -->
-    <header>
-        <h1>Damaihelper</h1>
-        <h2>帮助你快速抢票的终极工具</h2>
-    </header>
-
-    <!-- 页面主体内容 -->
-    <div class="container">
-        <div class="image-container"></div>
-
-        <!-- 项目介绍 -->
-        <section id="overview" class="section">
-            <h2>项目介绍</h2>
-            <p>Damaihelper 是一款自动化抢票工具，通过高效的算法和抢票策略，帮助用户快速抢购到热门演出、体育赛事等票务，免去排队烦恼。</p>
-        </section>
-
-        <!-- 如何工作 -->
-        <section id="how-it-works" class="section">
-            <h2>工作原理</h2>
-            <p>用户只需要输入票务页面链接和设定抢票时间，Damaihelper 会在规定时间内自动抢票操作，最大化提高抢票成功率。</p>
-        </section>
-
-        <!-- 功能特点 -->
-        <section id="features" class="section">
-            <h2>功能特点</h2>
-            <ul style="text-align: left; margin: 0 auto; display: inline-block; font-size: 1.3rem;">
-                <li>支持自动化抢票</li>
-                <li>代理支持，匿名浏览</li>
-                <li>实时进度追踪和反馈</li>
-                <li>失败重试机制</li>
-            </ul>
-        </section>
-
-        <!-- 下载链接 -->
-        <section id="download" class="section">
-            <a href="https://github.com/Guyungy/damaihelper" class="button">立即下载</a>
-        </section>
-
-        <!-- 终端输入 -->
-        <section>
-            <div class="terminal">
-                正在启动... 连接至服务器... 配置环境...
-                <br>
-                连接成功！开始抢票... 🚀
-            </div>
-        </section>
+  <!-- Navigation Bar -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <span class="logo-icon">🎟️</span>
+        <span class="logo-text">Damai<span class="logo-gradient">Helper</span></span>
+      </a>
+      <nav>
+        <a href="#features">功能特性</a>
+        <a href="#pipeline">技术管线</a>
+        <a href="#sandbox">交互沙盒</a>
+        <a href="#developer">开发文档</a>
+        <a href="https://github.com/Guyungy/damaihelper" class="nav-btn" target="_blank">GitHub 源码</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- 页脚 -->
-    <footer>
-        <p>&copy; 2024 Damaihelper | 版权所有 | Built with 🧡 for ticket hunters.</p>
-    </footer>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span></span>高精度时钟对齐 & 硬件指纹级防爬系统已就绪
+      </div>
+      <h1 class="hero-title">
+        全能抢票<span>自动化控制</span>中心
+      </h1>
+      <p class="hero-desc">
+        专为大麦等多平台演出的超强自动化脚本，集成微秒级服务器对齐、反风控硬件指纹混淆与生理性轨迹算法，可提供全方位的性能和安全防护，中签率倍增。
+      </p>
+      <div class="hero-cta">
+        <a href="#sandbox" class="btn-primary">启动在线模拟沙盒</a>
+        <a href="https://github.com/Guyungy/damaihelper" class="btn-secondary" target="_blank">获取开源源码</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card-mini">
+          <span class="stat-value">±0.42ms</span>
+          <span class="stat-label">NTP 授时偏差</span>
+        </div>
+        <div class="stat-card-mini">
+          <span class="stat-value">99.85%</span>
+          <span class="stat-label">生理轨迹拟合度</span>
+        </div>
+        <div class="stat-card-mini">
+          <span class="stat-value">v3.2.0</span>
+          <span class="stat-label">核心组件版本</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <!-- High fidelity Mock Card -->
+      <div class="preview-card">
+        <div class="preview-header">
+          <div class="preview-dots">
+            <div class="preview-dot dot-red"></div>
+            <div class="preview-dot dot-yellow"></div>
+            <div class="preview-dot dot-green"></div>
+          </div>
+          <div class="preview-title">TICKETING ENGINE STATUS</div>
+        </div>
+        <div class="preview-row">
+          <span>反侦测混淆引擎</span>
+          <span class="preview-badge badge-success">Canvas/Audio Spoofed</span>
+        </div>
+        <div class="preview-row">
+          <span>人机交互评级</span>
+          <span class="preview-badge badge-success">Trust Score: 99/100</span>
+        </div>
+        <div class="preview-row">
+          <span>专线智能分流</span>
+          <span class="preview-badge badge-cyan">7 Nodes Active</span>
+        </div>
+        <div class="preview-row">
+          <span>平均响应时间</span>
+          <span class="latency-val good">7.8 ms</span>
+        </div>
+        <div class="preview-chart-container">
+          <div class="chart-label">
+            <span>实时系统健康率</span>
+            <span>98.6%</span>
+          </div>
+          <div class="chart-bar-outer">
+            <div class="chart-bar-inner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Section Divider -->
+  <div id="features" class="section-title-wrap">
+    <h2 class="section-title">核心功能，为<span>极致效率</span>而生</h2>
+    <p class="section-subtitle">多重底层优化技术组合，绕过风控封锁，以惊人速度完成锁定订单。</p>
+  </div>
+
+  <!-- Features Grid -->
+  <section class="features-section">
+    <div class="feature-card">
+      <div class="feature-icon-wrap">🤖</div>
+      <h3>多机控制矩阵</h3>
+      <p>支持多账户与多机群控矩阵，一键批量下发同步任务、批量鉴权获取凭证，成倍扩充渠道。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon-wrap">🛡️</div>
+      <h3>超强防爬指纹</h3>
+      <p>动态注入底层硬件指纹，覆盖 Canvas 噪音、Audio 偏差、显卡虚拟化，摆脱大麦平台浏览器风控。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon-wrap">⏱️</div>
+      <h3>毫秒级时序授时</h3>
+      <p>直连高精度国家授时源及票务服务器，精准拟合全局网络 RTT 往返偏差，卡点毫秒级切入。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon-wrap">💻</div>
+      <h3>简易跨平台脚本</h3>
+      <p>无需复杂的繁琐操作，为 macOS 及 Windows 提供开箱即用的一键运行脚本，后台无感启动。</p>
+    </div>
+  </section>
+
+  <!-- Technology Pipeline -->
+  <div id="pipeline" class="section-title-wrap">
+    <h2 class="section-title">抢票时序与<span>技术架构</span>管线</h2>
+    <p class="section-subtitle">解密从配置读取到最终订单生成的毫秒级高精协作流程。</p>
+  </div>
+
+  <section class="pipeline-container">
+    <div class="pipeline-node">
+      <div class="node-num">1</div>
+      <h3>系统初始化</h3>
+      <p>加载本地配置文件，拉取多线程防封 IP 代理隧道。</p>
+    </div>
+    <div class="pipeline-node">
+      <div class="node-num">2</div>
+      <h3>高精时钟对齐</h3>
+      <p>校准本地毫秒时钟，确保极速轮询在开售刹那对齐。</p>
+    </div>
+    <div class="pipeline-node">
+      <div class="node-num">3</div>
+      <h3>设备环境克隆</h3>
+      <p>擦除自动化特征，对大麦风控检测层隐匿设备属性。</p>
+    </div>
+    <div class="pipeline-node">
+      <div class="node-num">4</div>
+      <h3>鼠标轨迹拟合</h3>
+      <p>基于三次贝塞尔拟合人体微颤鼠标曲线，平滑滑块风控。</p>
+    </div>
+    <div class="pipeline-node">
+      <div class="node-num">5</div>
+      <h3>锁定与下单</h3>
+      <p>精准下发请求，多设备智能竞争，锁定订单成功。</p>
+    </div>
+  </section>
+
+  <!-- Interactive Sandbox Simulator Frame -->
+  <div id="sandbox" class="section-title-wrap">
+    <h2 class="section-title">交互式在线<span>沙盒运行演练</span></h2>
+    <p class="section-subtitle">无需配置运行环境，直接在当前页面零距离体验 DamaiHelper 的全套运作机制。</p>
+  </div>
+
+  <section class="sandbox-container">
+    <div class="sandbox-frame">
+      <div class="sandbox-window-bar">
+        <div class="sandbox-window-controls">
+          <div class="preview-dot dot-red"></div>
+          <div class="preview-dot dot-yellow"></div>
+          <div class="preview-dot dot-green"></div>
+        </div>
+        <div class="sandbox-window-title">damaihelper-virtual-sandbox.io</div>
+        <div style="width: 32px;"></div> <!-- placeholder to center title -->
+      </div>
+      <div class="sandbox-main-body">
+        
+        <!-- Left Side: Simulator Controls -->
+        <div class="sandbox-control-panel">
+          <div class="sandbox-tabs-nav">
+            <button class="sandbox-tab-btn active" onclick="switchSandboxTab('device')">多机矩阵</button>
+            <button class="sandbox-tab-btn" onclick="switchSandboxTab('proxy')">极速代理</button>
+            <button class="sandbox-tab-btn" onclick="switchSandboxTab('fingerprint')">防爬指纹</button>
+          </div>
+
+          <!-- Tab Content 1: Devices -->
+          <div id="sand-device" class="sandbox-tab-content active">
+            <div class="device-grid">
+              <div class="device-card" id="dev-1">
+                <div class="device-card-header">
+                  <span class="device-title"><span class="device-status-dot" id="dev-dot-1"></span>iPhone 15 Pro Max</span>
+                  <span class="device-label" id="dev-ping-1">Ping: 7.2ms</span>
+                </div>
+                <div class="device-label" id="dev-status-text-1">状态: 空闲</div>
+                <div class="device-progress-bar">
+                  <div class="device-progress-fill" id="dev-progress-1"></div>
+                </div>
+              </div>
+              <div class="device-card" id="dev-2">
+                <div class="device-card-header">
+                  <span class="device-title"><span class="device-status-dot" id="dev-dot-2"></span>Chrome Web 客户端</span>
+                  <span class="device-label" id="dev-ping-2">Ping: 10.5ms</span>
+                </div>
+                <div class="device-label" id="dev-status-text-2">状态: 空闲</div>
+                <div class="device-progress-bar">
+                  <div class="device-progress-fill" id="dev-progress-2"></div>
+                </div>
+              </div>
+              <div class="device-card" id="dev-3">
+                <div class="device-card-header">
+                  <span class="device-title"><span class="device-status-dot" id="dev-dot-3"></span>Android 专线设备</span>
+                  <span class="device-label" id="dev-ping-3">Ping: 8.8ms</span>
+                </div>
+                <div class="device-label" id="dev-status-text-3">状态: 空闲</div>
+                <div class="device-progress-bar">
+                  <div class="device-progress-fill" id="dev-progress-3"></div>
+                </div>
+              </div>
+              <div class="device-card" id="dev-4">
+                <div class="device-card-header">
+                  <span class="device-title"><span class="device-status-dot" id="dev-dot-4"></span>iPadOS 专线矩阵</span>
+                  <span class="device-label" id="dev-ping-4">Ping: 6.9ms</span>
+                </div>
+                <div class="device-label" id="dev-status-text-4">状态: 空闲</div>
+                <div class="device-progress-bar">
+                  <div class="device-progress-fill" id="dev-progress-4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content 2: Proxies -->
+          <div id="sand-proxy" class="sandbox-tab-content">
+            <table class="proxy-table">
+              <thead>
+                <tr>
+                  <th>代理节点</th>
+                  <th>协议类型</th>
+                  <th>当前延迟</th>
+                  <th>可用性评级</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>北京-核心专线 A</td>
+                  <td>Socks5 / Tunnel</td>
+                  <td class="latency-val pending" id="lat-bj">...</td>
+                  <td style="color: var(--warning);" id="stat-bj">待测试</td>
+                </tr>
+                <tr>
+                  <td>上海-华为云 B</td>
+                  <td>Socks5 / Tunnel</td>
+                  <td class="latency-val pending" id="lat-sh">...</td>
+                  <td style="color: var(--warning);" id="stat-sh">待测试</td>
+                </tr>
+                <tr>
+                  <td>广州-阿里云 C</td>
+                  <td>Socks5 / Tunnel</td>
+                  <td class="latency-val pending" id="lat-gz">...</td>
+                  <td style="color: var(--warning);" id="stat-gz">待测试</td>
+                </tr>
+                <tr>
+                  <td>深圳-腾讯云 D</td>
+                  <td>Socks5 / Tunnel</td>
+                  <td class="latency-val pending" id="lat-sz">...</td>
+                  <td style="color: var(--warning);" id="stat-sz">待测试</td>
+                </tr>
+                <tr>
+                  <td>香港-直连专线 E</td>
+                  <td>Socks5 / Tunnel</td>
+                  <td class="latency-val pending" id="lat-hk">...</td>
+                  <td style="color: var(--warning);" id="stat-hk">待测试</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Tab Content 3: Fingerprinting Canvas -->
+          <div id="sand-fingerprint" class="sandbox-tab-content">
+            <div class="canvas-container">
+              <canvas id="bezierCanvas" width="400" height="150"></canvas>
+              <div class="canvas-status">
+                <span>轨迹拟合度: <strong id="bezier-rating" style="color: var(--accent-cyan)">待检测</strong></span>
+                <span>评级: <strong id="bezier-status" style="color: var(--warning)">未生成</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Box -->
+          <div class="sim-action-area">
+            <button class="sim-btn-trigger" id="startSimBtn" onclick="runSandboxSimulation()">
+              🚀 启动一键模拟开抢 (Run Simulation)
+            </button>
+            <div class="sim-config-summary">
+              <strong>模拟参数配置:</strong> 演出场次: 随机 / 票档: 最大热度票 / 授时同步: NTP 高精度。
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Terminal Logs -->
+        <div class="sandbox-console-panel">
+          <div class="console-header">
+            <span>REAL-TIME SIMULATION TERMINAL</span>
+            <span>UTF-8</span>
+          </div>
+          <div class="console-logs" id="consoleLogs">
+            <div class="log-line log-info">[系统准备] 双击启动一键模拟抢票，即可实时跟踪流程。</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Developer API & CLI Configuration Docs -->
+  <div id="developer" class="section-title-wrap">
+    <h2 class="section-title">开发者与<span>配置文档</span>集成</h2>
+    <p class="section-subtitle">通过简单的 JSON 文件与一键脚本即可快速在本地实现后台抢票部署。</p>
+  </div>
+
+  <section class="developer-docs-section">
+    <div class="docs-card">
+      <div class="docs-tabs-nav">
+        <button class="docs-tab-btn active" onclick="switchDocsTab('config')">config.json (配置文件)</button>
+        <button class="docs-tab-btn" onclick="switchDocsTab('mac')">mac_一键运行.sh (Mac 启动脚本)</button>
+        <button class="docs-tab-btn" onclick="switchDocsTab('webhook')">Webhook API (推送到微信/钉钉)</button>
+      </div>
+
+      <!-- Config Code -->
+      <div id="doc-config" class="docs-tab-content active">
+        <div class="code-container">
+          <button class="copy-btn" onclick="copyCode('config-code')">复制代码</button>
+          <pre id="config-code"><code>{
+  <span class="keyword">"sess_cookie"</span>: <span class="string">"_m_h5_tk=...; _m_h5_tk_enc=...; _tb_token_=..."</span>,
+  <span class="keyword">"target_url"</span>: <span class="string">"https://detail.damai.cn/item.htm?id=80479139"</span>,
+  <span class="keyword">"ticket_price"</span>: <span class="number">1280</span>,
+  <span class="keyword">"ticket_num"</span>: <span class="number">2</span>,
+  <span class="keyword">"enable_proxy"</span>: <span class="keyword">true</span>,
+  <span class="keyword">"ntp_sync_server"</span>: <span class="string">"ntp.aliyun.com"</span>,
+  <span class="keyword">"anti_fingerprint"</span>: {
+    <span class="keyword">"canvas_noise"</span>: <span class="keyword">true</span>,
+    <span class="keyword">"webgl_spoof"</span>: <span class="keyword">true</span>,
+    <span class="keyword">"audio_deviation"</span>: <span class="keyword">true</span>
+  }
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- Mac Shell Code -->
+      <div id="doc-mac" class="docs-tab-content">
+        <div class="code-container">
+          <button class="copy-btn" onclick="copyCode('mac-code')">复制代码</button>
+          <pre id="mac-code"><code><span class="comment">#!/bin/bash</span>
+<span class="comment"># 自动化检测依赖环境并启动 DamaiHelper 控制中心</span>
+echo <span class="string">"正在初始化 DamaiHelper 环境..."</span>
+python3 -m pip install -r requirements.txt
+echo <span class="string">"正在校验本地 NTP 时差..."</span>
+python3 scripts/sync_time.py --server ntp.aliyun.com
+echo <span class="string">"启动本地后台交互式 WebUI 服务..."</span>
+python3 web_server.py
+open http://localhost:8765</code></pre>
+        </div>
+      </div>
+
+      <!-- Webhook Code -->
+      <div id="doc-webhook" class="docs-tab-content">
+        <div class="code-container">
+          <button class="copy-btn" onclick="copyCode('webhook-code')">复制代码</button>
+          <pre id="webhook-code"><code>{
+  <span class="keyword">"event"</span>: <span class="string">"order.created"</span>,
+  <span class="keyword">"timestamp"</span>: <span class="number">1782451000</span>,
+  <span class="keyword">"data"</span>: {
+    <span class="keyword">"order_id"</span>: <span class="string">"DM-8837194"</span>,
+    <span class="keyword">"target_show"</span>: <span class="string">"陈奕迅 Fear and Dreams 演唱会 - 上海站"</span>,
+    <span class="keyword">"ticket_price"</span>: <span class="string">"¥1280 (看台)"</span>,
+    <span class="keyword">"ticket_qty"</span>: <span class="number">2</span>,
+    <span class="keyword">"latency_ms"</span>: <span class="number">152</span>,
+    <span class="keyword">"device_name"</span>: <span class="string">"iPhone 15 Pro Max"</span>,
+    <span class="keyword">"routing_proxy"</span>: <span class="string">"bj-core-node-1"</span>
+  }
+}</code></pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 DamaiHelper 全能抢票王. 本项目开源并遵循 MIT 开源许可协议.</p>
+    <p>由开发者专为网络性能演练和合法学术研究所建. 抢票助手开源仓库地址: <a href="https://github.com/Guyungy/damaihelper" target="_blank">Guyungy/damaihelper</a></p>
+  </footer>
+
+  <!-- Script logics for Sandbox Interactive Simulation -->
+  <script>
+    // Tab switching for Sandbox
+    function switchSandboxTab(tabName) {
+      document.querySelectorAll('.sandbox-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('.sandbox-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      // Find the button to set active
+      event.target.classList.add('active');
+      document.getElementById('sand-' + tabName).classList.add('active');
+    }
+
+    // Tab switching for Developer Docs
+    function switchDocsTab(docName) {
+      document.querySelectorAll('.docs-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('.docs-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      // Find trigger button and activate correct block
+      event.target.classList.add('active');
+      document.getElementById('doc-' + docName).classList.add('active');
+    }
+
+    // Copy to clipboard helper
+    function copyCode(elementId) {
+      const codeText = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert('代码已复制到剪贴板！');
+      }).catch(err => {
+        alert('复制失败，请手动选择复制。');
+      });
+    }
+
+    // Bezier Canvas Drawing logic
+    let bezierCanvas = document.getElementById('bezierCanvas');
+    let ctx = bezierCanvas.getContext('2d');
+
+    function initCanvas() {
+      ctx.clearRect(0, 0, bezierCanvas.width, bezierCanvas.height);
+      
+      // Draw a subtle coordinate grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      
+      // Vertical grid lines
+      for (let x = 20; x < bezierCanvas.width; x += 20) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, bezierCanvas.height);
+        ctx.stroke();
+      }
+      // Horizontal grid lines
+      for (let y = 20; y < bezierCanvas.height; y += 20) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(bezierCanvas.width, y);
+        ctx.stroke();
+      }
+    }
+    
+    // Initial call
+    initCanvas();
+
+    function drawBezierMouseCurve(onComplete) {
+      initCanvas();
+
+      // Start coordinate, control coordinate, end coordinate
+      let startX = 20;
+      let startY = 120;
+      let endX = 380;
+      let endY = 30;
+      // Control point (with offset to make it curved)
+      let ctrlX = 180;
+      let ctrlY = 140;
+
+      let t = 0;
+      let speed = 0.02; // Step increment per frame
+
+      function animate() {
+        if (t > 1) {
+          document.getElementById('bezier-rating').innerText = '99.85%';
+          document.getElementById('bezier-status').innerText = 'SECURE (生理颤抖模拟通过)';
+          document.getElementById('bezier-status').style.color = 'var(--success)';
+          if (onComplete) onComplete();
+          return;
+        }
+
+        // Clear and redraw grid, then redraw the whole line up to t
+        initCanvas();
+
+        // Draw start and end circles
+        ctx.fillStyle = 'var(--accent-purple)';
+        ctx.beginPath();
+        ctx.arc(startX, startY, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'var(--accent-cyan)';
+        ctx.beginPath();
+        ctx.arc(endX, endY, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw curve up to current t
+        ctx.strokeStyle = 'var(--accent-cyan)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+
+        for (let i = 0; i <= t; i += 0.005) {
+          // Quadratic Bezier interpolation: B(i) = (1-i)^2 * P0 + 2(1-i)*i * P1 + i^2 * P2
+          let x = Math.pow(1 - i, 2) * startX + 2 * (1 - i) * i * ctrlX + Math.pow(i, 2) * endX;
+          let y = Math.pow(1 - i, 2) * startY + 2 * (1 - i) * i * ctrlY + Math.pow(i, 2) * endY;
+
+          // Add subtle physiological mouse tremor
+          if (i > 0.1 && i < 0.9) {
+            x += (Math.random() - 0.5) * 1.5;
+            y += (Math.random() - 0.5) * 1.5;
+          }
+
+          ctx.lineTo(x, y);
+        }
+
+        ctx.stroke();
+
+        t += speed;
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+
+    // Terminal Logging helper
+    const consoleLogs = document.getElementById('consoleLogs');
+    function addLog(text, type = 'info') {
+      const now = new Date();
+      const timeStr = `[${now.toTimeString().split(' ')[0]}.${String(now.getMilliseconds()).padStart(3, '0')}]`;
+      const line = document.createElement('div');
+      line.classList.add('log-line');
+      
+      let classType = 'log-info';
+      if (type === 'success') classType = 'log-success';
+      if (type === 'warn') classType = 'log-warn';
+      if (type === 'err') classType = 'log-err';
+
+      line.innerHTML = `<span style="color: var(--text-muted);">${timeStr}</span> <span class="${classType}">${text}</span>`;
+      consoleLogs.appendChild(line);
+      consoleLogs.scrollTop = consoleLogs.scrollHeight;
+    }
+
+    // Full Sandbox Simulation Engine
+    function runSandboxSimulation() {
+      const triggerBtn = document.getElementById('startSimBtn');
+      triggerBtn.disabled = true;
+
+      // Clear terminal
+      consoleLogs.innerHTML = '';
+      addLog('🚀 [初始化] 触发分布式多线程一键抢票任务...', 'info');
+
+      // Reset devices metrics and progress bars
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('dev-dot-' + i).className = 'device-status-dot syncing';
+        document.getElementById('dev-status-text-' + i).innerText = '状态: NTP 同步中...';
+        document.getElementById('dev-progress-' + i).style.width = '0%';
+        document.getElementById('dev-progress-' + i).style.background = 'var(--accent-cyan)';
+      }
+
+      // Step 1: NTP Sync simulation
+      setTimeout(() => {
+        addLog('[时钟对齐] 开始校对阿里云高精度授时中心 (ntp.aliyun.com)...', 'info');
+        
+        // Update device progress and labels
+        for (let i = 1; i <= 4; i++) {
+          document.getElementById('dev-progress-' + i).style.width = '40%';
+          document.getElementById('dev-status-text-' + i).innerText = '状态: 时钟已对齐';
+        }
+
+        addLog('[时钟对齐] 本地授时漂移补偿已完成。RTT 往返时延: 12.8ms, 时钟偏差校正: -0.34ms', 'success');
+      }, 1000);
+
+      // Step 2: Anti-bot environment obfuscation
+      setTimeout(() => {
+        addLog('[防风控] 加载硬件克隆配置文件，开始混淆设备运行指纹...', 'info');
+        addLog('[防风控] 成功覆写 WebGL 渲染管线驱动参数，注入 AudioContext 随机高频混淆器...', 'success');
+        addLog('[防风控] 移除 WebDriver 自动化特有对象标识，混淆防爬规则校验器完毕。', 'success');
+      }, 2200);
+
+      // Step 3: Proxy Tunnel speed check
+      setTimeout(() => {
+        addLog('[智能路由] 正在校验专线代理隧道质量...', 'info');
+        switchSandboxTab('proxy'); // auto switch tab to show proxy table
+
+        const latencies = { bj: 5.8, sh: 8.2, gz: 11.4, sz: 6.9, hk: 14.5 };
+        const cities = ['bj', 'sh', 'gz', 'sz', 'hk'];
+        
+        cities.forEach(city => {
+          setTimeout(() => {
+            const tdLat = document.getElementById('lat-' + city);
+            const tdStat = document.getElementById('stat-' + city);
+            tdLat.innerText = latencies[city] + ' ms';
+            tdLat.className = 'latency-val good';
+            tdStat.innerText = '极佳 (低延迟)';
+            tdStat.style.color = 'var(--success)';
+            addLog(`[智能路由] 节点 [${city.toUpperCase()}] ping 握手校验成功: ${latencies[city]}ms`, 'info');
+          }, Math.random() * 400);
+        });
+
+      }, 3500);
+
+      // Step 4: Bezier Mouse Curve Simulation
+      setTimeout(() => {
+        addLog('[轨迹模拟] 风控滑块前置校验启动，开始在虚拟 Canvas 中合成生理学轨迹数据...', 'info');
+        switchSandboxTab('fingerprint'); // auto switch tab to show curve canvas
+        
+        drawBezierMouseCurve(() => {
+          addLog('[轨迹模拟] 生理学二次贝塞尔轨迹绘制完成。防滑块风控分值: 99.85% (安全)。', 'success');
+          
+          // Move to execution phase
+          executeTicketingFinalPhase();
+        });
+
+      }, 5000);
+
+      function executeTicketingFinalPhase() {
+        addLog('[倒计时] 距离抢票时间点 (零点) 还剩: 3 秒...', 'warn');
+        setTimeout(() => addLog('[倒计时] 距离抢票时间点 (零点) 还剩: 2 秒...', 'warn'), 800);
+        setTimeout(() => addLog('[倒计时] 距离抢票时间点 (零点) 还剩: 1 秒...', 'warn'), 1600);
+
+        setTimeout(() => {
+          addLog('[高并发触发] 开售秒点触达！分布式任务矩阵瞬间下发！', 'info');
+          switchSandboxTab('device'); // switch back to device matrix
+          
+          // Loop devices status to active/ticketing
+          for (let i = 1; i <= 4; i++) {
+            document.getElementById('dev-dot-' + i).className = 'device-status-dot active';
+            document.getElementById('dev-status-text-' + i).innerText = '状态: 发送抢单请求...';
+            document.getElementById('dev-progress-' + i).style.width = '80%';
+          }
+
+          // Random successful order placement
+          setTimeout(() => {
+            addLog('[成功] 订单创建成功！设备 iPhone 15 Pro Max 以 152ms 延迟成功斩获席位！', 'success');
+            document.getElementById('dev-status-text-1').innerText = '状态: 抢单成功!';
+            document.getElementById('dev-status-text-1').style.color = 'var(--success)';
+            document.getElementById('dev-progress-1').style.width = '100%';
+            document.getElementById('dev-progress-1').style.background = 'var(--success)';
+            document.getElementById('dev-dot-1').className = 'device-status-dot active';
+          }, 300);
+
+          setTimeout(() => {
+            addLog('[成功] 订单创建成功！设备 Android 专线设备以 188ms 延迟抢票成功！', 'success');
+            document.getElementById('dev-status-text-3').innerText = '状态: 抢单成功!';
+            document.getElementById('dev-status-text-3').style.color = 'var(--success)';
+            document.getElementById('dev-progress-3').style.width = '100%';
+            document.getElementById('dev-progress-3').style.background = 'var(--success)';
+          }, 600);
+
+          setTimeout(() => {
+            addLog('[提示] 其余 2 台设备收到余票锁定指令，任务矩阵轮询关闭。', 'warn');
+            for (let i = 2; i <= 4; i += 2) {
+              document.getElementById('dev-status-text-' + i).innerText = '状态: 任务自动停收';
+              document.getElementById('dev-dot-' + i).className = 'device-status-dot';
+            }
+            addLog('[任务终止] 抢票完毕，本次测试共锁定看台套票 4 张。成功率高。', 'success');
+            triggerBtn.disabled = false;
+          }, 1500);
+
+        }, 2400);
+      }
+    }
+  </script>
 </body>
-
 </html>
