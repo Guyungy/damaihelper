@@ -534,7 +534,7 @@
       box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
     }
 
-    .pipeline-node:hybrid .node-num {
+    .pipeline-node:nth-child(even) .node-num {
       border-color: var(--accent-purple);
       color: var(--accent-purple);
       box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
@@ -1481,7 +1481,7 @@
         <div class="code-container">
           <button class="copy-btn" onclick="copyCode('mac-code')">复制代码</button>
           <pre id="mac-code"><code><span class="comment">#!/bin/bash</span>
-<span class="comment"># 自动化检测依赖环境并启动 DamaiHelper 控制中心</span>
+<span class="comment"># 自动化检测依赖环境并启动 DamaiHelper 环境</span>
 echo <span class="string">"正在初始化 DamaiHelper 环境..."</span>
 python3 -m pip install -r requirements.txt
 echo <span class="string">"正在校验本地 NTP 时差..."</span>

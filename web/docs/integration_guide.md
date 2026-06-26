@@ -114,7 +114,7 @@ def save_config(config: dict):
 @app.websocket("/api/ws/logs")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    # 模拟读取本地 log 文件变化并推送
+    # 读取本地 log 文件变化并推送
     log_file = "logs/current_run.log"
     if not os.path.exists(log_file):
         open(log_file, "w").close()
