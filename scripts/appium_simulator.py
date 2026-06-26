@@ -10,7 +10,7 @@ def start_simulation(account_info):
     }
     driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
 
-    # 执行模拟操作
-    # 例如模拟点击、滑动、输入等
+    # 执行操作
+    # 例如点击、滑动、输入等
     driver.find_element_by_id("com.damai.android:id/login_button").click()
     driver.quit()

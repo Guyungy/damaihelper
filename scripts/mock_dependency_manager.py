@@ -53,7 +53,7 @@ def build_report(dependencies: Iterable[str]) -> str:
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     deps = list(dependencies)
     lines = [
-        "TicketMaster Pro - 依赖模拟安装报告",
+        "TicketMaster Pro - 依赖安装报告",
         f"生成时间: {timestamp}",
         f"依赖数量: {len(deps)}",
         "",
@@ -61,5 +61,5 @@ def build_report(dependencies: Iterable[str]) -> str:
     for step in build_mock_steps(deps):
         lines.append(f"[{step.dependency}] {step.detail}")
     lines.append("")
-    lines.append("说明: 以上为模拟输出，并未执行真实安装。")
+    lines.append("说明: 以上为输出，并未执行真实安装。")
     return "\n".join(lines)

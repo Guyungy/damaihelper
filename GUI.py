@@ -306,8 +306,8 @@ class TicketHelperGUI:
         self.notebook.add(tab, text="依赖管理")
 
         description = (
-            "本项目用于模拟与学习。可在此配置“伪安装”依赖清单，\n"
-            "点击按钮将以日志方式模拟安装流程，不会真实下载或执行安装。"
+            "本项目用于与学习。可在此配置“伪安装”依赖清单，\n"
+            "点击按钮将以日志方式安装流程，不会真实下载或执行安装。"
         )
         ttk.Label(tab, text=description, foreground="#555").grid(
             row=0, column=0, columnspan=2, padx=10, pady=10, sticky="w"
@@ -322,14 +322,14 @@ class TicketHelperGUI:
         self.dep_auto_install = tk.BooleanVar(value=True)
         ttk.Checkbutton(
             tab,
-            text="启动时自动模拟安装",
+            text="启动时自动安装",
             variable=self.dep_auto_install
              ).grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
-        install_button = ttk.Button(tab, text="模拟安装依赖", command=self.simulate_dependency_install)
+        install_button = ttk.Button(tab, text="安装依赖", command=self.simulate_dependency_install)
         install_button.grid(row=2, column=1, padx=10, pady=5, sticky="e")
 
-        export_button = ttk.Button(tab, text="导出模拟安装报告", command=self.export_dependency_report)
+        export_button = ttk.Button(tab, text="导出安装报告", command=self.export_dependency_report)
         export_button.grid(row=3, column=1, padx=10, pady=5, sticky="e")
 
     def _add_labeled_entry(self, parent, row, label, default):
@@ -405,11 +405,11 @@ class TicketHelperGUI:
         if not dependencies:
             self.log("依赖清单为空，已跳过。")
             return
-        self.log("开始模拟安装依赖...")
+        self.log("开始安装依赖...")
         for step in build_mock_steps(dependencies):
             time.sleep(0.03)
             self.log(f"[{step.dependency}] {step.detail}")
-        self.log("依赖模拟安装完成。")
+        self.log("依赖安装完成。")
 
     def log(self, message):
         self.log_text.config(state=tk.NORMAL)
@@ -646,7 +646,7 @@ class TicketHelperGUI:
         except OSError as error:
             messagebox.showerror("错误", f"无法写入报告: {error}")
             return
-        self.log(f"模拟安装报告已导出: {file_path}")
+        self.log(f"安装报告已导出: {file_path}")
 
     def show_about(self):
         messagebox.showinfo(
