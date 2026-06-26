@@ -234,14 +234,14 @@ class TicketHelperGUI:
         self.notebook.add(tab, text="策略设置")
 
         self.strategy_auto = tk.BooleanVar(value=True)
-        ttk.Checkbutton(tab, text="启用自动出手", variable=self.strategy_auto, background="#ffffff").grid(
+        ttk.Checkbutton(tab, text="启用自动出手", variable=self.strategy_auto).grid(
             row=0, column=0, sticky="w", padx=10, pady=5
         )
         self.strategy_time = self._add_labeled_entry(tab, 1, "开抢时间(ISO)", "2026-01-25T12:00:00")
         self.strategy_preheat = self._add_labeled_entry(tab, 2, "预热阶段(秒,逗号)", "5.0,2.0,0.5")
 
         self.strategy_ai = tk.BooleanVar(value=True)
-        ttk.Checkbutton(tab, text="启用AI决策", variable=self.strategy_ai, background="#ffffff").grid(
+        ttk.Checkbutton(tab, text="启用AI决策", variable=self.strategy_ai).grid(
             row=3, column=0, sticky="w", padx=10, pady=5
         )
         self.strategy_ai_model = self._add_labeled_entry(tab, 4, "AI模型路径", "models/lstm_onnx.onnx")
@@ -259,7 +259,7 @@ class TicketHelperGUI:
         self.notebook.add(tab, text="监控设置")
 
         self.monitor_enable = tk.BooleanVar(value=True)
-        ttk.Checkbutton(tab, text="启用库存监控", variable=self.monitor_enable, background="#ffffff").grid(
+        ttk.Checkbutton(tab, text="启用库存监控", variable=self.monitor_enable).grid(
             row=0, column=0, sticky="w", padx=10, pady=5
         )
         self.monitor_poll_interval = self._add_labeled_entry(tab, 1, "轮询间隔(秒)", "1.5")
@@ -294,7 +294,7 @@ class TicketHelperGUI:
         tab = tk.Frame(self.notebook, bg="#ffffff")
         self.notebook.add(tab, text="插件扩展")
 
-        ttk.Label(tab, text="自定义插件(逗号分隔)", background="#ffffff").grid(
+        ttk.Label(tab, text="自定义插件(逗号分隔)").grid(
             row=0, column=0, padx=10, pady=10, sticky="w"
         )
         self.plugins_custom = ttk.Entry(tab, width=60, font=("Arial", 11))
@@ -309,7 +309,7 @@ class TicketHelperGUI:
             "本项目用于模拟与学习。可在此配置“伪安装”依赖清单，\n"
             "点击按钮将以日志方式模拟安装流程，不会真实下载或执行安装。"
         )
-        ttk.Label(tab, text=description, background="#ffffff", foreground="#555").grid(
+        ttk.Label(tab, text=description, foreground="#555").grid(
             row=0, column=0, columnspan=2, padx=10, pady=10, sticky="w"
         )
 
@@ -323,9 +323,8 @@ class TicketHelperGUI:
         ttk.Checkbutton(
             tab,
             text="启动时自动模拟安装",
-            variable=self.dep_auto_install,
-            background="#ffffff",
-        ).grid(row=2, column=0, padx=10, pady=5, sticky="w")
+            variable=self.dep_auto_install
+             ).grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
         install_button = ttk.Button(tab, text="模拟安装依赖", command=self.simulate_dependency_install)
         install_button.grid(row=2, column=1, padx=10, pady=5, sticky="e")
