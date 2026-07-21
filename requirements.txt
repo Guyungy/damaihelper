@@ -1,5 +1,23 @@
-selenium==4.0.0
-appium-python-client==2.0.0
-pillow==8.4.0
-apscheduler==3.8.0
-pytesseract==0.3.8
+# ============================================================
+# DamaiHelper 核心依赖（不含 torch / ultralytics）
+# GPU 栈请用: python tools/install_deps.py
+# ============================================================
+
+# Web / 自动化
+selenium>=4.15.0
+Appium-Python-Client>=3.1.0
+APScheduler>=3.10.0
+Pillow>=10.0.0
+pytesseract>=0.3.10
+
+# HTTP / 工具
+requests>=2.31.0
+httpx>=0.27.0
+orjson>=3.9.0
+psutil>=5.9.0
+numpy>=1.26.0
+opencv-python-headless>=4.8.0
+
+# 配置与日志
+PyYAML>=6.0
+python-dotenv>=1.0.0

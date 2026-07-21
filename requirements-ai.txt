@@ -1,0 +1,14 @@
+# ============================================================
+# AI / GPU 依赖说明（不要直接 pip install -r 本文件装 torch）
+# 请使用: python tools/install_deps.py
+# 或:     win一键运行.bat
+#
+# 本机实测 (2026-07):
+#   GPU: RTX 4070 / Driver 610 / CUDA UMD 13.3
+#   Python 3.14 可用轮子: torch 2.11+cu128 或 2.13+cu126
+# ============================================================
+
+# YOLO 与视觉（torch 由 install_deps 按 CUDA 索引安装）
+ultralytics>=8.3.0
+opencv-python-headless>=4.8.0
+numpy>=1.26.0

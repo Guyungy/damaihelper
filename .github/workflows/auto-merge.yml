@@ -1,0 +1,84 @@
+# 在 PR 打开/更新时自动开启 GitHub Auto-merge（squash）。
+# 前提：仓库 Settings → General → Allow auto-merge 已勾选。
+# 若 main 分支保护要求「至少 1 个审批」，还需有人 Approve，或把 required reviews 设为 0，
+# 或取消 “Require a pull request before merging” 下的审批门槛，auto-merge 才会真正合入。
+#
+# 本地也可：gh pr merge --auto --squash <PR号>
+
+name: Auto Merge
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, labeled]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+concurrency:
+  group: auto-merge-${{ github.event.pull_request.number || github.event.check_suite.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  enable-auto-merge:
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge (squash)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -e
+          # 跳过带 do-not-merge / wip 标签的 PR
+          labels=$(gh pr view "$PR" --json labels --jq '[.labels[].name] | join(",")')
+          echo "labels=$labels"
+          if echo "$labels" | grep -Eiq '(do-not-merge|wip|hold|no-auto-merge)'; then
+            echo "Skip: blocked by label"
+            exit 0
+          fi
+          # 开启 auto-merge；若已开启则忽略错误
+          gh pr merge "$PR" --auto --squash || true
+          gh pr view "$PR" --json autoMergeRequest,mergeStateStatus,reviewDecision \
+            --jq '{autoMerge:.autoMergeRequest, state:.mergeStateStatus, review:.reviewDecision}'
+
+  # 当审查通过且检查完成时，再尝试一次（覆盖「先开 PR 后才 Approve」的情况）
+  merge-when-ready:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge if requirements satisfied
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          # 找出与本次事件相关的 open PR
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            PR="${{ github.event.pull_request.number }}"
+          else
+            BRANCH="${{ github.event.check_suite.head_branch }}"
+            [ -z "$BRANCH" ] && echo "No PR/branch context" && exit 0
+            PR=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+            [ -z "$PR" ] && echo "No open PR for $BRANCH" && exit 0
+          fi
+          echo "PR=#$PR"
+          labels=$(gh pr view "$PR" --json labels --jq '[.labels[].name] | join(",")')
+          if echo "$labels" | grep -Eiq '(do-not-merge|wip|hold|no-auto-merge)'; then
+            echo "Skip: blocked by label"
+            exit 0
+          fi
+          gh pr merge "$PR" --auto --squash || true
+          # 若已满足合并条件则直接 squash 合并（仍受分支保护约束）
+          state=$(gh pr view "$PR" --json mergeable,reviewDecision,mergeStateStatus \
+            --jq '{mergeable:.mergeable, review:.reviewDecision, state:.mergeStateStatus}')
+          echo "$state"
+          # mergeStateStatus == CLEAN 且 mergeable 时尝试合并
+          gh pr merge "$PR" --squash --delete-branch || true

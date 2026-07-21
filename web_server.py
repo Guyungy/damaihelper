@@ -1,373 +1,404 @@
-import http.server
-import socketserver
-import webbrowser
+# coding: utf-8
+"""DamaiHelper Web 控制中心：静态资源 + REST API。
+
+API 契约（web/index.html 与 web-ui Ant Design 共用）：
+  GET  /api/config
+  POST /api/config
+  POST /api/ticket/start
+  POST /api/ticket/stop
+  GET  /api/ticket/logs?offset=0
+  GET  /api/ticket/status?offset=0
+  POST /api/dependencies/install
+  GET  /api/dependencies/report
+  GET  /api/health
+  GET  /api/ai/status
+  POST /api/ai/load
+  POST /api/ai/detect
+  POST /api/ai/slider
+"""
+
+from __future__ import annotations
+
+import json
+import mimetypes
 import os
 import sys
-import json
-import time
 import threading
+import webbrowser
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from typing import Any, Dict, Optional, Tuple
+from urllib.parse import parse_qs, urlparse, unquote
 
-# Port matches the default configured in dashboard tab (8765)
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.config_manager import (  # noqa: E402
+    ConfigError,
+    load_config,
+    save_config,
+)
+from scripts.device_probe import environment_report  # noqa: E402
+from scripts.mock_dependency_manager import build_report, default_dependencies  # noqa: E402
+from scripts.task_runner import runner  # noqa: E402
+from scripts.yolo_engine import engine as yolo_engine  # noqa: E402
+
 PORT = 8765
+WEB_UI_DIST = ROOT / "web-ui" / "dist"
+LEGACY_WEB = ROOT / "web"
 
-# Shared Server State for Ticketing Simulator
-status = "idle"
-progress = 0
-logs = []
-state_lock = threading.Lock()
-stop_flag = False
 
-def add_log(level, message):
-    global logs
-    now = new_log_time = time.strftime("%H:%M:%S")
-    with state_lock:
-        logs.append({
-            "level": level,
-            "message": message
-        })
-    # Also print to python console
-    print(f"[{now}] [{level}] {message}")
+def _json_bytes(payload: Any) -> bytes:
+    return json.dumps(payload, ensure_ascii=False).encode("utf-8")
 
-class DashboardHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-    def do_OPTIONS(self):
-        # Support CORS preflight options request
+
+def _read_json_body(handler: SimpleHTTPRequestHandler) -> Tuple[Optional[Any], Optional[str]]:
+    length = int(handler.headers.get("Content-Length", 0) or 0)
+    raw = handler.rfile.read(length) if length > 0 else b""
+    if not raw:
+        return {}, None
+    try:
+        return json.loads(raw.decode("utf-8")), None
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return None, f"无效 JSON: {exc}"
+
+
+class DashboardHTTPRequestHandler(SimpleHTTPRequestHandler):
+    """静态站点 + /api/* 路由。"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    # ---- CORS / helpers -------------------------------------------------
+    def _send_cors(self) -> None:
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def _json_response(self, status: int, payload: Any) -> None:
+        body = _json_bytes(payload)
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self._send_cors()
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _text_response(self, status: int, text: str, content_type: str = "text/plain; charset=utf-8") -> None:
+        body = text.encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self._send_cors()
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_OPTIONS(self) -> None:  # noqa: N802
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self._send_cors()
         self.end_headers()
 
-    def do_POST(self):
-        global status, progress, logs, stop_flag
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length) if content_length > 0 else b''
+    # ---- routing --------------------------------------------------------
+    def do_GET(self) -> None:  # noqa: N802
+        parsed = urlparse(self.path)
+        path = parsed.path if parsed.path != "/" else "/"
+        # 规范化：去掉末尾斜杠（根路径除外）
+        if path != "/" and path.endswith("/"):
+            path = path.rstrip("/")
 
-        # Parse routing
-        if self.path == '/api/config':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            try:
-                config_data = json.loads(post_data.decode('utf-8'))
-                os.makedirs("config", exist_ok=True)
-                with open("config/config.json", "w", encoding="utf-8") as f:
-                    json.dump(config_data, f, ensure_ascii=False, indent=2)
-                self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
-            except Exception as e:
-                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+        if path.startswith("/api/"):
+            return self._handle_api_get(path, parsed)
 
-        elif self.path == '/api/ticket/start':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            with state_lock:
-                status = "running"
-                progress = 0
-                logs = []
-                stop_flag = False
-            
-            # Start background ticketing worker thread
-            t = threading.Thread(target=ticketing_worker_thread)
-            t.daemon = True
-            t.start()
-            self.wfile.write(json.dumps({"status": "started"}).encode('utf-8'))
-
-        elif self.path == '/api/ticket/stop':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            with state_lock:
-                stop_flag = True
-                status = "stopped"
-            add_log("SYSTEM", "收到用户主动终止任务指令，正在安全关闭抢票进程与浏览器资源...")
-            self.wfile.write(json.dumps({"status": "stopped"}).encode('utf-8'))
-
-        elif self.path == '/api/dependencies/install':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            try:
-                data = json.loads(post_data.decode('utf-8'))
-                packages = data.get("packages", [])
-            except:
-                packages = []
-            
-            with state_lock:
-                status = "running"
-                progress = 0
-                logs = []
-                stop_flag = False
-            
-            t = threading.Thread(target=dependency_install_worker_thread, args=(packages,))
-            t.daemon = True
-            t.start()
-            self.wfile.write(json.dumps({"status": "started"}).encode('utf-8'))
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def do_GET(self):
-        global status, progress, logs
-        # Redirect root URL and /dashboard to show the Web UI without exposing the html extension
-        if self.path == '/' or self.path == '/dashboard':
-            self.path = '/web/index.html'
+        # 优先 Ant Design 构建产物，其次旧版 web/index.html
+        if path in ("/", "/dashboard", "/app"):
+            if (WEB_UI_DIST / "index.html").exists():
+                return self._serve_file(WEB_UI_DIST / "index.html")
+            self.path = "/web/index.html"
             return super().do_GET()
-        
-        elif self.path.startswith('/api/ticket/logs'):
-            from urllib.parse import urlparse, parse_qs
-            query = parse_qs(urlparse(self.path).query)
-            offset = int(query.get('offset', [0])[0])
-            
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            
-            with state_lock:
-                data = {
-                    "status": status,
-                    "progress": progress,
-                    "logs": logs[offset:]
-                }
-            self.wfile.write(json.dumps(data).encode('utf-8'))
-            return
 
-        elif self.path == '/api/config':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            
-            config_file = "config/config.json"
-            if not os.path.exists(config_file):
-                config_file = "config/demo_config.json"
-            
-            if os.path.exists(config_file):
-                with open(config_file, "r", encoding="utf-8") as f:
-                    self.wfile.write(f.read().encode('utf-8'))
-            else:
-                self.wfile.write(json.dumps({}).encode('utf-8'))
-            return
-            
+        # SPA 静态资源：/assets/* 从 web-ui/dist 提供
+        if path.startswith("/assets/") and WEB_UI_DIST.exists():
+            candidate = (WEB_UI_DIST / path.lstrip("/")).resolve()
+            if str(candidate).startswith(str(WEB_UI_DIST.resolve())) and candidate.is_file():
+                return self._serve_file(candidate)
+
+        # 旧版兼容
+        if path.startswith("/web/"):
+            return super().do_GET()
+
+        # Ant Design SPA fallback（history 路由）
+        if (WEB_UI_DIST / "index.html").exists() and not path.startswith("/api"):
+            # 尝试 dist 下真实文件
+            candidate = (WEB_UI_DIST / unquote(path.lstrip("/"))).resolve()
+            if str(candidate).startswith(str(WEB_UI_DIST.resolve())) and candidate.is_file():
+                return self._serve_file(candidate)
+            return self._serve_file(WEB_UI_DIST / "index.html")
+
         return super().do_GET()
 
-    # Suppress verbose log messages in the terminal for static files
-    def log_message(self, format, *args):
-        # Only print API route calls or custom messages
-        if "/api/" in format:
-            sys.stderr.write("%s - - [%s] %s\n" %
-                             (self.address_string(),
-                              self.log_date_time_string(),
-                              format%args))
+    def _serve_file(self, file_path: Path) -> None:
+        if not file_path.is_file():
+            self._json_response(404, {"status": "error", "message": "not found"})
+            return
+        content_type, _ = mimetypes.guess_type(str(file_path))
+        content_type = content_type or "application/octet-stream"
+        data = file_path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
+        self._send_cors()
+        self.end_headers()
+        self.wfile.write(data)
 
-# Dependency Steps Mapping
-dependencySteps = [
-    "解析包依赖关系库",
-    "下载分布式环境依赖缓存",
-    "校验包安全证书与SHA256哈希",
-    "编译Wheel底层二进制文件",
-    "成功安装并加载依赖缓存"
-]
+    def do_POST(self) -> None:  # noqa: N802
+        parsed = urlparse(self.path)
+        path = parsed.path.rstrip("/") or "/"
+        if not path.startswith("/api/"):
+            self._json_response(404, {"status": "error", "message": "not found"})
+            return
+        self._handle_api_post(path)
 
-def dependency_install_worker_thread(packages):
-    global status, progress, stop_flag
-    total_packages = len(packages)
-    if total_packages == 0:
-        with state_lock:
-            status = "idle"
-        return
+    def _handle_api_get(self, path: str, parsed) -> None:
+        if path == "/api/health":
+            self._json_response(
+                200,
+                {
+                    "status": "ok",
+                    "service": "damaihelper-web",
+                    "busy": runner.is_busy(),
+                    "task": runner.get_status(0),
+                },
+            )
+            return
 
-    add_log("SYSTEM", "开始进行环境运行包依赖部署及版本自检...")
-    step_count = 0
-    total_steps = total_packages * len(dependencySteps)
+        if path == "/api/config":
+            try:
+                cfg = load_config()
+                self._json_response(200, cfg)
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
+            return
 
-    for pkg in packages:
-        for step in dependencySteps:
-            if stop_flag:
+        if path in ("/api/ticket/logs", "/api/ticket/status"):
+            query = parse_qs(parsed.query)
+            try:
+                offset = int((query.get("offset") or ["0"])[0])
+            except ValueError:
+                offset = 0
+            snap = runner.get_status(offset)
+            # 兼容旧前端字段
+            self._json_response(
+                200,
+                {
+                    "status": snap["status"],
+                    "progress": snap["progress"],
+                    "logs": snap["logs"],
+                    "task_type": snap.get("task_type"),
+                    "task_id": snap.get("task_id"),
+                    "message": snap.get("message"),
+                    "total_logs": snap.get("total_logs"),
+                    "offset": snap.get("offset"),
+                    "busy": snap.get("busy"),
+                },
+            )
+            return
+
+        if path == "/api/dependencies/report":
+            try:
+                cfg = load_config()
+                packages = list((cfg.get("dependencies") or {}).get("packages") or default_dependencies())
+                report = build_report(packages)
+                self._text_response(200, report)
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
+            return
+
+        if path == "/api/ai/status":
+            try:
+                payload = {
+                    "status": "ok",
+                    "engine": yolo_engine.status(),
+                    "environment": environment_report(),
+                }
+                self._json_response(200, payload)
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
+            return
+
+        self._json_response(404, {"status": "error", "message": f"unknown endpoint: {path}"})
+
+    def _handle_api_post(self, path: str) -> None:
+        body, err = _read_json_body(self)
+        if err:
+            self._json_response(400, {"status": "error", "message": err})
+            return
+
+        if path == "/api/config":
+            try:
+                if not isinstance(body, dict):
+                    raise ConfigError("请求体必须是 JSON 对象")
+                target = save_config(body)
+                self._json_response(
+                    200,
+                    {
+                        "status": "success",
+                        "message": "配置保存成功",
+                        "path": str(target),
+                    },
+                )
+            except ConfigError as exc:
+                self._json_response(400, {"status": "error", "message": str(exc)})
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
+            return
+
+        if path == "/api/ticket/start":
+            # 可选：请求体直接带配置覆盖；否则用磁盘配置
+            override = body if isinstance(body, dict) and body else None
+            dry_run = True
+            if isinstance(body, dict) and "dry_run" in body:
+                dry_run = bool(body.get("dry_run"))
+                # dry_run 不是配置字段，去掉后再决定是否覆盖配置
+                override = {k: v for k, v in body.items() if k != "dry_run"} or None
+
+            if override:
+                try:
+                    save_config(override)
+                    config = load_config()
+                except ConfigError as exc:
+                    self._json_response(400, {"status": "error", "message": str(exc)})
+                    return
+            else:
+                config = load_config()
+
+            result = runner.start_ticket(config=config, dry_run=dry_run)
+            status_code = 200 if result.get("status") == "started" else 409
+            if result.get("code") == "missing_event_url":
+                status_code = 400
+            self._json_response(status_code, result)
+            return
+
+        if path == "/api/ticket/stop":
+            result = runner.stop()
+            self._json_response(200, result)
+            return
+
+        if path == "/api/dependencies/install":
+            packages = []
+            if isinstance(body, dict):
+                packages = body.get("packages") or []
+            result = runner.start_dependency_install(packages=list(packages))
+            status_code = 200 if result.get("status") == "started" else 409
+            if result.get("code") == "empty_packages":
+                status_code = 400
+            self._json_response(status_code, result)
+            return
+
+        if path == "/api/ai/load":
+            allow_download = True
+            device = None
+            if isinstance(body, dict):
+                allow_download = bool(body.get("allow_download", True))
+                device = body.get("device")
+            if device:
+                yolo_engine.device_pref = str(device)
+            try:
+                status = yolo_engine.ensure_loaded(allow_download=allow_download)
+                self._json_response(200, {"status": "ok", "engine": status})
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
+            return
+
+        if path == "/api/ai/detect":
+            if not isinstance(body, dict):
+                self._json_response(400, {"status": "error", "message": "需要 JSON 对象"})
                 return
-            
-            time.sleep(0.04) # Simulating network download / build
-            add_log(pkg, step)
-            
-            step_count += 1
-            with state_lock:
-                progress = min(int((step_count / total_steps) * 100), 99)
-
-    if stop_flag:
-        return
-    with state_lock:
-        progress = 100
-        status = "completed"
-    add_log("SYSTEM", "环境依赖安装及配置成功！")
-
-def ticketing_worker_thread():
-    global status, progress, stop_flag
-
-    # Load user config so logs reflect real settings (still a sandbox — no real purchase)
-    target_url = ""
-    tickets = 2
-    viewers = [0, 1]
-    platform = "damai"
-    mobile = ""
-    date_priorities = [1]
-    session_priorities = [1]
-    auto_buy = True
-    try:
-        config_file = "config/config.json"
-        if not os.path.exists(config_file):
-            config_file = "config/demo_config.json"
-        if os.path.exists(config_file):
-            with open(config_file, "r", encoding="utf-8") as f:
-                cfg = json.load(f)
-            auto_buy = cfg.get("strategy", {}).get("auto_strike", True)
-            acc = (cfg.get("accounts") or {}).get("acc_primary") or {}
-            platform = acc.get("platform") or platform
-            creds = acc.get("credentials") or {}
-            mobile = creds.get("mobile") or ""
-            target = acc.get("target") or {}
-            target_url = target.get("event_url") or ""
-            tickets = target.get("tickets") or tickets
-            viewers = target.get("viewers") or viewers
-            priorities = target.get("priorities") or {}
-            date_priorities = priorities.get("date") or date_priorities
-            session_priorities = priorities.get("session") or session_priorities
-    except Exception as e:
-        print("Read config err:", e)
-
-    add_log(
-        "WARNING",
-        "当前为 Web 控制台【沙箱演示】：不会打开真实浏览器、不会真实下单。"
-        " 预览画面中的城市/姓名若曾写死为示例文案，已改为按 config 渲染。"
-        " 实机请运行 ticket_script.py 或桌面 GUI。",
-    )
-    add_log(
-        "INFO",
-        f"读取配置 → 平台={platform} 手机={mobile or '未填写'} "
-        f"票数={tickets} 观演人索引={viewers} "
-        f"日期优先级={date_priorities} 场次优先级={session_priorities}",
-    )
-    if target_url:
-        add_log("INFO", f"目标演出链接 (来自配置): {target_url}")
-    else:
-        add_log("WARNING", "配置中未填写 target.event_url，预览将使用占位标题。")
-
-    steps = [
-        (5, "INFO", "[沙箱] 模拟连接代理路由服务器..."),
-        (10, "SYSTEM", "[沙箱] 模拟注入 Selenium 隐身防御补丁 (--disable-blink-features=AutomationControlled)"),
-        (15, "INFO", "[沙箱] 模拟初始化 Chrome WebDriver（未真实启动浏览器）..."),
-    ]
-
-    for p, lvl, msg in steps:
-        if stop_flag:
+            image = body.get("image")
+            conf = body.get("conf")
+            try:
+                result = yolo_engine.detect(image=image, conf=conf)
+                self._json_response(200, {"status": "ok", **result})
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
             return
-        with state_lock:
-            progress = p
-        add_log(lvl, msg)
-        time.sleep(0.4)
 
-    # Core Environment Dependency Check
-    chrome_ok = True
-    try:
-        import selenium  # noqa: F401
-        from selenium import webdriver  # noqa: F401
-    except ImportError:
-        chrome_ok = False
-        add_log("WARNING", "运行环境中未检测到 [selenium] 库。沙箱演示可继续，实机抢票需先安装依赖。")
-
-    driver_file = "chromedriver.exe" if sys.platform.startswith("win") else "chromedriver"
-    if not os.path.exists(driver_file):
-        add_log(
-            "WARNING",
-            f"本地根目录下未检测到驱动 [{driver_file}]。沙箱演示不依赖驱动；实机将尝试系统 Chrome。",
-        )
-    if chrome_ok:
-        add_log("DEBUG", "selenium 已安装（本线程仍不执行真实抢票）。")
-
-    flow = [
-        (25, "INFO", "[沙箱] 模拟解析账户 Cookies (cookies.pkl)..."),
-        (32, "WARNING", "[沙箱] 演示路径：若无 cookies.pkl，实机将弹出扫码登录窗口"),
-        (40, "SYSTEM", f"### 扫码登录引导 (演示) ### 绑定手机: {mobile or '未填写'}"),
-        (48, "INFO", "[沙箱] 模拟 Cookies 同步成功（未真实扫码）"),
-        (55, "DEBUG", "### 载入 Cookie 验证状态成功 (演示) ### 正在向购票目标页面进行跳转..."),
-        (
-            62,
-            "INFO",
-            f"正在解析日历票档卡片... 日期优先级={date_priorities} 场次优先级={session_priorities}",
-        ),
-        (
-            72,
-            "INFO",
-            f"正在检索余票状态... 模拟勾选实名观演人索引 {viewers}（索引来自配置，非固定姓名如「张三」）",
-        ),
-        (85, "SYSTEM", "### 极速自动出手 (Auto Strike · 沙箱) ### 模拟提交订单包中..."),
-    ]
-
-    for p, lvl, msg in flow:
-        if stop_flag:
+        if path == "/api/ai/slider":
+            image = None
+            if isinstance(body, dict):
+                image = body.get("image")
+            try:
+                result = yolo_engine.solve_slider(image=image)
+                self._json_response(200, {"status": "ok", **result})
+            except Exception as exc:  # noqa: BLE001
+                self._json_response(500, {"status": "error", "message": str(exc)})
             return
-        with state_lock:
-            progress = p
-        add_log(lvl, msg)
-        time.sleep(0.7)
 
-    if stop_flag:
-        return
-    with state_lock:
-        progress = 100
-        status = "completed"
+        self._json_response(404, {"status": "error", "message": f"unknown endpoint: {path}"})
 
-    if auto_buy:
-        add_log("INFO", "🎉 [SUCCESS] 沙箱流程走通（演示成功，未真实下单 / 未扣款）。")
-        add_log(
-            "SYSTEM",
-            "🎟️ 沙箱演示结束。实机抢票请运行: python ticket_script.py 或桌面 GUI，并确认 Chrome/Cookie 就绪。",
-        )
-    else:
-        add_log(
-            "WARNING",
-            "[沙箱] 未启用自动秒杀下单。演示仅模拟选座；实机需在浏览器中人工提交订单。",
-        )
+    def log_message(self, format: str, *args) -> None:  # noqa: A003
+        # 仅打印 API 访问，避免静态资源刷屏
+        try:
+            msg = format % args
+        except Exception:
+            msg = format
+        if "/api/" in str(msg):
+            sys.stderr.write(
+                "%s - - [%s] %s\n"
+                % (self.address_string(), self.log_date_time_string(), msg)
+            )
 
-def main():
-    # Force working directory to the directory containing this script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(script_dir)
 
-    handler = DashboardHTTPRequestHandler
-    socketserver.TCPServer.allow_reuse_address = True
-    
-    print("===================================================")
-    print("   DamaiHelper Web控制中心 - 服务端集成启动中")
-    print("===================================================")
-    print(f"[*] 正在尝试绑定本地服务端口 {PORT}...")
-    
+def resolve_port() -> int:
+    """优先读配置中的 dashboard.port，失败则回退默认。"""
     try:
-        with socketserver.TCPServer(("", PORT), handler) as httpd:
-            url = f"http://localhost:{PORT}/"
-            print(f"[+] 服务启动成功！")
-            print(f"[+] 控制台后台地址: {url}")
-            print(f"[+] 正在拉取默认浏览器打开控制面板端...")
-            print("---------------------------------------------------")
-            print("提示: 请保持此窗口运行。关闭此窗口或按 Ctrl+C 将终止服务。")
-            print("---------------------------------------------------")
-            
-            # Automatically open browser
-            webbrowser.open(url)
-            
-            httpd.serve_forever()
-    except OSError as e:
-        print(f"\n[!] 端口绑定错误: 无法使用端口 {PORT} (可能已被占用或没有权限)。")
-        print("[!] 详细错误信息:", e)
-        print("[!] 提示: 您可以编辑 web_server.py 修改 PORT 变量，或关闭占用该端口的进程。")
+        cfg = load_config()
+        port = int(((cfg.get("global") or {}).get("dashboard") or {}).get("port") or PORT)
+        if 1 <= port <= 65535:
+            return port
+    except Exception:
+        pass
+    return PORT
+
+
+def main() -> None:
+    os.chdir(ROOT)
+    port = resolve_port()
+
+    print("===================================================")
+    print("   DamaiHelper Web 控制中心")
+    print("===================================================")
+    print(f"[*] 工作目录: {ROOT}")
+    print(f"[*] 绑定端口: {port}")
+
+    try:
+        server = ThreadingHTTPServer(("", port), DashboardHTTPRequestHandler)
+    except OSError as exc:
+        print(f"\n[!] 无法绑定端口 {port}: {exc}")
+        print("[!] 可修改 config/config.json 中 global.dashboard.port，或关闭占用进程。")
         sys.exit(1)
+
+    url = f"http://localhost:{port}/"
+    ui = "Ant Design (web-ui/dist)" if (WEB_UI_DIST / "index.html").exists() else "Legacy web/index.html"
+    print(f"[+] 服务启动成功: {url}")
+    print(f"[+] 前端: {ui}")
+    print("[+] API: /api/health /api/config /api/ticket/* /api/dependencies/* /api/ai/*")
+    print("---------------------------------------------------")
+    print("提示: 保持此窗口运行；Ctrl+C 退出。")
+    print("---------------------------------------------------")
+
+    # 延迟打开浏览器，避免阻塞启动日志
+    threading.Timer(0.6, lambda: webbrowser.open(url)).start()
+
+    try:
+        server.serve_forever()
     except KeyboardInterrupt:
-        print("\n[*] 正在关闭控制中心服务...")
-        print("[*] 服务已安全退出。")
+        print("\n[*] 正在关闭服务...")
+        runner.stop()
+        server.shutdown()
+        print("[*] 已安全退出。")
         sys.exit(0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

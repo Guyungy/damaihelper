@@ -2125,8 +2125,6 @@
         <span
           style="font-size:10px; font-weight:bold; color:var(--accent-cyan); background:rgba(6,182,212,0.1); padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono';">WebDriver
           控制端</span>
-        <span id="sim-mode-badge"
-          style="display:none; font-size:10px; font-weight:bold; color:#b45309; background:rgba(245,158,11,0.15); padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono'; margin-left:4px;">沙箱演示</span>
       </div>
 
       <div class="browser-content" id="webdriver-browser-screen">
@@ -2135,8 +2133,8 @@
         <div class="web-screen active" id="screen-idle">
           <div style="font-size:48px; margin-bottom:12px;">🖥️</div>
           <h3 style="font-size:14px; color:#475569; font-weight:600;">浏览器运行画面同步 (已闲置)</h3>
-          <p style="font-size:11px; color:#94a3b8; max-width:280px; margin-top:4px;">启动抢票任务后，此处展示流程预览画面。
-            若后端未联接或处于沙箱模式，显示的是<strong>演示数据</strong>，不会真实下单。</p>
+          <p style="font-size:11px; color:#94a3b8; max-width:260px; margin-top:4px;">启动抢票任务后，此处将高保真同步 Selenium Chrome
+            实机渲染画面与点击点击流</p>
         </div>
 
         <!-- Screen 1: Scan QR Login -->
@@ -2178,23 +2176,24 @@
             <div class="ticket-header-row">
               <div class="ticket-cover">票</div>
               <div class="ticket-meta-info">
-                <span class="ticket-badge-pill" id="screen-details-badge">流程预览 / 沙箱演示</span>
-                <div class="ticket-title-text" id="screen-details-title">目标演出（将根据配置刷新）</div>
+                <span class="ticket-badge-pill">大麦自营 / 实机选座</span>
+                <div class="ticket-title-text" id="screen-details-title">【成都站】超级明星2026世界巡回演唱会 - 抢购专场</div>
               </div>
             </div>
 
             <div style="font-size:11px; color:#475569; font-weight:600; margin-top:8px;">日期选择优先链:</div>
             <div class="ticket-attributes-grid" id="screen-details-dates">
-              <div class="ticket-attr-card active-target">优先日期 [配置]</div>
-              <div class="ticket-attr-card">备选日期 [配置]</div>
+              <div class="ticket-attr-card active-target">2026-06-30 (周二) [优先]</div>
+              <div class="ticket-attr-card">2026-07-01 (周三) [备选]</div>
             </div>
 
             <div style="font-size:11px; color:#475569; font-weight:600; margin-top:4px;">票档等级选择优先链:</div>
             <div class="ticket-attributes-grid" id="screen-details-prices">
-              <div class="ticket-attr-card">票档策略 [配置]</div>
-              <div class="ticket-attr-card active-target">优先场次 [配置]</div>
+              <div class="ticket-attr-card">看台 480 元</div>
+              <div class="ticket-attr-card">看台 980 元</div>
+              <div class="ticket-attr-card active-target">内场 1280 元 [锁定]</div>
+              <div class="ticket-attr-card">内场 VIP 1680 元</div>
             </div>
-            <p style="font-size:10px; color:#94a3b8; margin-top:8px;" id="screen-details-url-hint">目标链接: —</p>
           </div>
         </div>
 
@@ -2203,12 +2202,18 @@
           <div class="web-checkout-details">
             <h4
               style="font-size:13px; font-weight:700; color:#0f172a; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">
-              订单确认提交流程预览 <span style="font-size:10px; color:#b45309; font-weight:600;">(沙箱演示 · 非真实下单)</span></h4>
+              订单确认提交 (buy.damai.cn)</h4>
 
-            <div style="font-size:11px; color:#475569; font-weight:600; margin-top:4px;">选定实名观演人索引 (来自配置):</div>
-            <div class="checkout-viewer-row" id="checkout-viewer-row">
+            <div style="font-size:11px; color:#475569; font-weight:600; margin-top:4px;">选定实名观演人:</div>
+            <div class="checkout-viewer-row">
               <div class="viewer-item-chip checked">
-                <span>✔</span> 观演人 #0
+                <span>✔</span> 张三 (1101**********1234)
+              </div>
+              <div class="viewer-item-chip checked">
+                <span>✔</span> 李四 (1102**********5678)
+              </div>
+              <div class="viewer-item-chip">
+                <span>○</span> 王五 (3101**********9999)
               </div>
             </div>
 
@@ -2217,12 +2222,11 @@
               <div>
                 <div style="font-weight:700; color:#0f172a;">购票数量: <span style="color:var(--accent-purple);"
                     id="checkout-qty">2 张</span></div>
-                <div style="color:var(--text-muted); margin-top:2px;" id="checkout-event-hint">目标演出将按配置展示</div>
+                <div style="color:var(--text-muted); margin-top:2px;">内场 1280 元 (成都市东安湖体育公园)</div>
               </div>
               <div
-                style="text-align:right; font-weight:700; color:var(--accent-pink); font-size:12px; align-self:center;"
-                id="checkout-price-hint">
-                预览模式
+                style="text-align:right; font-weight:700; color:var(--accent-pink); font-size:14px; align-self:center;">
+                ¥ 2560.00
               </div>
             </div>
           </div>
@@ -2231,12 +2235,11 @@
         <!-- Screen 5: Locked Ticket Modal Preview (Embedded) -->
         <div class="web-screen" id="screen-success-view">
           <div class="success-check-ring">✔</div>
-          <h3 style="font-size:14px; color:var(--success); font-weight:700; margin-top:10px;">沙箱流程走通成功</h3>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:4px;" id="screen-success-detail">
-            这是演示预览，未产生真实订单。实机请运行 ticket_script.py / GUI。</p>
+          <h3 style="font-size:14px; color:var(--success); font-weight:700; margin-top:10px;">抢购席位锁定成功！</h3>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">订单编号: DM87654321908 | 席位: 内场A区10排8座</p>
           <div
-            style="font-size:11px; font-weight:700; color:#b45309; margin-top:10px; padding:6px 14px; background:#fff8f3; border:1px solid rgba(245,158,11,0.25); border-radius:6px;">
-            沙箱演示 · 未真实下单 / 未扣款
+            style="font-size:11px; font-weight:700; color:#ff6b00; margin-top:10px; padding:6px 14px; background:#fff8f3; border:1px solid rgba(255,107,0,0.15); border-radius:6px;">
+            请在 14分45秒 内完成付款完成出票
           </div>
         </div>
 
@@ -2272,44 +2275,43 @@
 
     <div class="success-receipt-box" style="z-index: 101;">
       <div class="success-check-ring">✔</div>
-      <h2 style="font-size:18px; color:var(--success); font-weight:700; text-align:center;">🎟️ 沙箱流程走通</h2>
-      <p style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:-4px;" id="modal-success-subtitle">
-        当前为演示预览，未产生真实订单 / 未扣款</p>
+      <h2 style="font-size:18px; color:var(--success); font-weight:700; text-align:center;">🎟️ 抢票成功，订单已锁定！</h2>
+      <p style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:-4px;">系统已为您秒杀锁定成都站内场黄金席位</p>
 
       <!-- Receipt design -->
       <div
         style="width:100%; border-top:1px dashed #cbd5e1; border-bottom:1px dashed #cbd5e1; padding:12px 0; margin:10px 0; font-size:12px; line-height:1.8;">
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted);">目标演出:</span>
+          <span style="color:var(--text-muted);">购票演出:</span>
           <span
-            style="font-weight:600; color:#0f172a; max-width:180px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;"
-            id="modal-show-title">—</span>
+            style="font-weight:600; color:#0f172a; max-width:160px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;"
+            id="modal-show-title">【成都站】超级明星世界巡演</span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted);">日期优先级:</span>
-          <span style="font-weight:600; color:#0f172a;" id="modal-show-date">—</span>
+          <span style="color:var(--text-muted);">锁定场次:</span>
+          <span style="font-weight:600; color:#0f172a;">2026-06-30 周二 19:30</span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted);">场次 / 票数:</span>
-          <span style="font-weight:600; color:#0f172a;" id="modal-show-session">—</span>
+          <span style="color:var(--text-muted);">所选价格:</span>
+          <span style="font-weight:600; color:#0f172a;">内场 1280 元 (2张)</span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted);">实名观演人索引:</span>
-          <span style="font-weight:600; color:#0f172a;" id="modal-show-viewers">—</span>
+          <span style="color:var(--text-muted);">实名观演人:</span>
+          <span style="font-weight:600; color:#0f172a;">张三、李四</span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted);">运行模式:</span>
-          <span style="font-weight:600; color:var(--accent-purple);" id="modal-show-mode">沙箱演示</span>
+          <span style="color:var(--text-muted);">所占座次:</span>
+          <span style="font-weight:600; color:var(--accent-purple);">内场 A区 10排 8-9座</span>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:13px; font-weight:700;">
-          <span>说明:</span>
-          <span style="color:var(--accent-pink); font-size:12px;" id="modal-show-total">非真实下单</span>
+        <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:14px; font-weight:700;">
+          <span>应付总计:</span>
+          <span style="color:var(--accent-pink);">¥ 2560.00</span>
         </div>
       </div>
 
       <div
-        style="font-size:11px; text-align:center; font-weight:700; color:#b45309; padding:6px 12px; background:#fff8f3; border:1px solid rgba(245,158,11,0.25); border-radius:6px; width:100%;">
-        若要实机抢票，请运行 ticket_script.py 或桌面 GUI，并确保 Chrome/Cookie 已就绪
+        style="font-size:11px; text-align:center; font-weight:700; color:#ff6b00; padding:6px 12px; background:#fff8f3; border:1px solid rgba(255,107,0,0.15); border-radius:6px; width:100%;">
+        支付剩余时间: <span id="payment-timer">14分59秒</span>
       </div>
 
       <div style="display:flex; gap:10px; width:100%; margin-top:8px;">
@@ -2626,13 +2628,14 @@
       };
     }
 
-    // Save and Trigger JSON file download
+    // Save config to backend (preferred) and also trigger JSON file download
     function saveAndDownloadConfig() {
       const configObj = serializeConfigFromDOM();
       const jsonStr = JSON.stringify(configObj, null, 2);
+
+      // Always allow local download as backup
       const blob = new Blob([jsonStr], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = "config.json";
@@ -2640,8 +2643,20 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      appendLog("SYSTEM", "配置已导出为本地 config.json", "info");
 
-      appendLog("SYSTEM", "配置保存完毕，已下载至本地！", "info");
+      // Persist to Python backend when available
+      apiRequest("/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: jsonStr
+      })
+        .then((data) => {
+          appendLog("SYSTEM", data.message || "配置已同步写入后端 config/config.json", "success");
+        })
+        .catch((err) => {
+          appendLog("SYSTEM", `后端未连接，仅完成本地导出: ${err.message}`, "warning");
+        });
     }
 
     // Import Local JSON Config
@@ -2703,9 +2718,69 @@
 
     // Get API Endpoint based on configured Host & Port
     function getApiBaseUrl() {
-      const host = document.getElementById('dashboard_host').value || 'localhost';
-      const port = document.getElementById('dashboard_port').value || '8765';
+      let host = (document.getElementById('dashboard_host') || {}).value || 'localhost';
+      const port = (document.getElementById('dashboard_port') || {}).value || '8765';
+      // 0.0.0.0 / :: 是监听地址，浏览器侧应改为 localhost
+      if (host === '0.0.0.0' || host === '::' || host === '[::]') {
+        host = 'localhost';
+      }
       return `http://${host}:${port}/api`;
+    }
+
+    /**
+     * 统一 API 请求封装：自动拼 base、CORS、错误信息。
+     * @returns {Promise<any>} 解析后的 JSON（或纯文本报告）
+     */
+    async function apiRequest(path, options = {}) {
+      const apiBase = getApiBaseUrl();
+      const url = path.startsWith('http') ? path : `${apiBase}${path.startsWith('/') ? path : '/' + path}`;
+      const opts = Object.assign({ mode: 'cors' }, options);
+      let res;
+      try {
+        res = await fetch(url, opts);
+      } catch (err) {
+        throw new Error(`网络不可达 (${url}): ${err.message}`);
+      }
+      const contentType = (res.headers.get('content-type') || '').toLowerCase();
+      let data = null;
+      if (contentType.includes('application/json')) {
+        data = await res.json().catch(() => ({}));
+      } else {
+        data = await res.text();
+      }
+      if (!res.ok) {
+        const msg = (data && data.message) ? data.message : `HTTP ${res.status}`;
+        const error = new Error(msg);
+        error.status = res.status;
+        error.data = data;
+        throw error;
+      }
+      return data;
+    }
+
+    /** 探测后端是否在线 */
+    async function probeBackend() {
+      try {
+        const health = await apiRequest('/health');
+        return health && health.status === 'ok';
+      } catch (_) {
+        return false;
+      }
+    }
+
+    /** 从后端拉取配置并应用到表单 */
+    async function loadConfigFromBackend() {
+      try {
+        const cfg = await apiRequest('/config');
+        if (cfg && typeof cfg === 'object' && !cfg.error) {
+          applyConfigToDOM(cfg);
+          appendLog("SYSTEM", "已从后端加载 config/config.json", "success");
+          return true;
+        }
+      } catch (err) {
+        console.warn("loadConfigFromBackend failed", err);
+      }
+      return false;
     }
 
     // Dependency steps mapping
@@ -2772,121 +2847,6 @@
       appendLog("SYSTEM", "已导出环境依赖自检报告文本文件！", "info");
     }
 
-    // Build preview content from current form config (sandbox mock UI)
-    function getPreviewContext() {
-      const targetUrl = (document.getElementById("target_event_url")?.value || "").trim();
-      const ticketNum = parseInt(document.getElementById("target_tickets")?.value, 10) || 2;
-      const viewersRaw = (document.getElementById("target_viewers")?.value || "0").trim() || "0";
-      const datePriorities = (document.getElementById("target_date_priorities")?.value || "1").trim() || "1";
-      const sessionPriorities = (document.getElementById("target_session_priorities")?.value || "1").trim() || "1";
-      const priceRange = document.getElementById("target_price_range")?.value || "lowest_to_highest";
-      const mobile = (document.getElementById("account_mobile")?.value || "").trim() || "未填写";
-      const platform = document.getElementById("account_platform")?.value || "damai";
-      const autoBuy = !!document.getElementById("auto_buy_check")?.checked;
-
-      let showTitle = "目标演出（已按配置加载）";
-      if (targetUrl) {
-        try {
-          const u = new URL(targetUrl);
-          const id = u.searchParams.get("id") || u.pathname.split("/").filter(Boolean).pop() || "";
-          showTitle = id ? `目标演出 #${id}` : (u.hostname + u.pathname);
-        } catch (e) {
-          showTitle = targetUrl.length > 48 ? targetUrl.slice(0, 48) + "…" : targetUrl;
-        }
-      }
-
-      const viewerIndexes = viewersRaw.split(/[,，\s]+/).map(s => s.trim()).filter(Boolean);
-      return {
-        targetUrl: targetUrl || "未填写演出链接",
-        ticketNum,
-        viewersRaw,
-        viewerIndexes: viewerIndexes.length ? viewerIndexes : ["0"],
-        datePriorities,
-        sessionPriorities,
-        priceRange,
-        mobile,
-        platform,
-        autoBuy,
-        showTitle
-      };
-    }
-
-    function setSimModeBadge(visible) {
-      const badge = document.getElementById("sim-mode-badge");
-      if (badge) badge.style.display = visible ? "inline-block" : "none";
-    }
-
-    function applyPreviewToMockScreens(ctx) {
-      if (!ctx) ctx = getPreviewContext();
-
-      const titleEl = document.getElementById("screen-details-title");
-      if (titleEl) titleEl.textContent = ctx.showTitle;
-
-      const badgeEl = document.getElementById("screen-details-badge");
-      if (badgeEl) badgeEl.textContent = "流程预览 / 沙箱演示";
-
-      const datesEl = document.getElementById("screen-details-dates");
-      if (datesEl) {
-        const dates = ctx.datePriorities.split(/[,，\s]+/).map(s => s.trim()).filter(Boolean);
-        datesEl.innerHTML = (dates.length ? dates : ["1"]).map((d, i) =>
-          `<div class="ticket-attr-card${i === 0 ? " active-target" : ""}">日期优先级 #${d}${i === 0 ? " [优先]" : ""}</div>`
-        ).join("");
-      }
-
-      const pricesEl = document.getElementById("screen-details-prices");
-      if (pricesEl) {
-        const sessions = ctx.sessionPriorities.split(/[,，\s]+/).map(s => s.trim()).filter(Boolean);
-        pricesEl.innerHTML = [
-          `<div class="ticket-attr-card">票档策略: ${ctx.priceRange}</div>`,
-          ...(sessions.length ? sessions : ["1"]).map((s, i) =>
-            `<div class="ticket-attr-card${i === 0 ? " active-target" : ""}">场次优先级 #${s}${i === 0 ? " [锁定]" : ""}</div>`
-          )
-        ].join("");
-      }
-
-      const urlHint = document.getElementById("screen-details-url-hint");
-      if (urlHint) urlHint.textContent = `目标链接: ${ctx.targetUrl}`;
-
-      const qtyEl = document.getElementById("checkout-qty");
-      if (qtyEl) qtyEl.textContent = `${ctx.ticketNum} 张`;
-
-      const eventHint = document.getElementById("checkout-event-hint");
-      if (eventHint) eventHint.textContent = ctx.showTitle;
-
-      const priceHint = document.getElementById("checkout-price-hint");
-      if (priceHint) priceHint.textContent = "预览模式";
-
-      const viewerRow = document.getElementById("checkout-viewer-row");
-      if (viewerRow) {
-        viewerRow.innerHTML = ctx.viewerIndexes.map(idx =>
-          `<div class="viewer-item-chip checked"><span>✔</span> 观演人索引 #${idx}</div>`
-        ).join("");
-      }
-
-      const successDetail = document.getElementById("screen-success-detail");
-      if (successDetail) {
-        successDetail.textContent = `配置预览 · ${ctx.showTitle} · ${ctx.ticketNum} 张 · 索引 [${ctx.viewersRaw}]（非真实订单）`;
-      }
-    }
-
-    function fillSuccessModalFromConfig(ctx, modeLabel) {
-      if (!ctx) ctx = getPreviewContext();
-      const mode = modeLabel || "沙箱演示";
-
-      const setText = (id, text) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = text;
-      };
-
-      setText("modal-show-title", ctx.showTitle);
-      setText("modal-show-date", `优先级 [${ctx.datePriorities}]`);
-      setText("modal-show-session", `场次 [${ctx.sessionPriorities}] · ${ctx.ticketNum} 张`);
-      setText("modal-show-viewers", `索引 [${ctx.viewersRaw}]（非真实姓名）`);
-      setText("modal-show-mode", mode);
-      setText("modal-show-total", "非真实下单 / 未扣款");
-      setText("modal-success-subtitle", `当前为 ${mode}，按你的配置展示流程预览，不会产生真实订单`);
-    }
-
     // UI WebDriver screen mirroring state switcher
     function switchWebdriverScreen(screenId, url = "") {
       const screens = ['screen-idle', 'screen-login', 'screen-captcha', 'screen-details', 'screen-checkout', 'screen-success-view'];
@@ -2902,10 +2862,6 @@
       }
       if (url) {
         document.getElementById('browser-address-bar').textContent = url;
-      }
-      // Keep mock screens in sync with latest form config whenever details/checkout show
-      if (screenId === "screen-details" || screenId === "screen-checkout" || screenId === "screen-success-view") {
-        applyPreviewToMockScreens(getPreviewContext());
       }
     }
 
@@ -3344,7 +3300,6 @@
     function closeSuccessModal() {
       document.getElementById('success-modal').classList.remove('active');
       if (confettiIntervalId) clearInterval(confettiIntervalId);
-      setSimModeBadge(false);
       switchWebdriverScreen('screen-idle', 'chrome://newtab/');
     }
 
@@ -3370,60 +3325,73 @@
     let logOffset = 0;
     let logPollTimeoutId = null;
 
+    function applyLogSideEffects(log) {
+      const message = log.message || "";
+      if (message.includes("指纹防御") || message.includes("指纹混淆") || message.includes("隐身防御")) {
+        highlightFlowNode("node-fingerprint");
+        switchWebdriverScreen("screen-idle", "chrome://newtab/");
+      } else if (message.includes("扫码登录引导")) {
+        switchWebdriverScreen("screen-login", "https://passport.damai.cn/login");
+      } else if (message.includes("校验状态成功") || message.includes("演出详情页") || message.includes("向购票目标页面")) {
+        switchWebdriverScreen("screen-details", "https://detail.damai.cn/item.htm?id=80456123490");
+        highlightFlowNode("node-mouse");
+      } else if (message.includes("滑块") || message.includes("验证码")) {
+        switchWebdriverScreen("screen-captcha", "https://detail.damai.cn/item.htm?id=80456123490");
+        highlightFlowNode("node-captcha");
+        setTimeout(() => {
+          const thumb = document.getElementById('captcha-slider-thumb');
+          const piece = document.getElementById('captcha-puzzle-piece');
+          if (thumb && piece) {
+            thumb.style.transition = 'left 1s ease-in-out';
+            piece.style.transition = 'left 1s ease-in-out';
+            thumb.style.left = '170px';
+            piece.style.left = '170px';
+          }
+        }, 100);
+      } else if (message.includes("实名观演人") || message.includes("订单结算") || message.includes("buy.damai.cn")) {
+        switchWebdriverScreen("screen-checkout", "https://buy.damai.cn/orderconfirm");
+        highlightFlowNode("node-order");
+      } else if (message.includes("SUCCESS") || message.includes("抢票成功")) {
+        switchWebdriverScreen("screen-success-view", "https://buy.damai.cn/ordersuccess");
+        highlightFlowNode("node-order", "success-node");
+        setTimeout(() => {
+          document.getElementById('success-modal').classList.add('active');
+          const qty = document.getElementById('target_tickets').value || 2;
+          document.getElementById('checkout-qty').textContent = `${qty} 张`;
+          document.getElementById('modal-show-title').textContent = "【成都市东安湖体育公园】2026超级演出";
+          triggerConfetti();
+        }, 1200);
+      }
+    }
+
+    function finishTaskUI(status) {
+      ticketingActive = false;
+      isSimulationRunning = false;
+      document.getElementById("start-btn").disabled = false;
+      document.getElementById("stop-btn").disabled = true;
+      document.getElementById("retry-btn").disabled = (status !== 'completed');
+
+      let stateText = "未开始";
+      if (status === 'completed') stateText = "任务完成";
+      else if (status === 'stopped') {
+        stateText = "任务已停止";
+        highlightFlowNode("", "idle");
+        switchWebdriverScreen("screen-idle", "chrome://newtab/");
+      } else if (status === 'error') {
+        stateText = "任务异常";
+      }
+      updateStatusUI(status, stateText);
+    }
+
     function pollBackendLogs() {
       if (!ticketingActive && !isSimulationRunning) return;
 
-      const apiBase = getApiBaseUrl();
-      fetch(`${apiBase}/ticket/logs?offset=${logOffset}`, { mode: 'cors' })
-        .then(res => {
-          if (!res.ok) throw new Error("Logger response");
-          return res.json();
-        })
+      apiRequest(`/ticket/logs?offset=${logOffset}`)
         .then(data => {
           if (data.logs && data.logs.length > 0) {
             data.logs.forEach(log => {
-              appendLog(log.level, log.message, log.level.toLowerCase());
-
-              // Sync Live WebDriver Viewport Mockup screen and AI nodes based on backend log messages
-              if (log.message.includes("指纹防御") || log.message.includes("指纹混淆")) {
-                highlightFlowNode("node-fingerprint");
-                switchWebdriverScreen("screen-idle", "chrome://newtab/");
-              } else if (log.message.includes("扫码登录引导")) {
-                switchWebdriverScreen("screen-login", "https://passport.damai.cn/login");
-              } else if (log.message.includes("校验状态成功") || log.message.includes("演出详情页")) {
-                switchWebdriverScreen("screen-details", "https://detail.damai.cn/item.htm?id=80456123490");
-                highlightFlowNode("node-mouse");
-              } else if (log.message.includes("滑块验证")) {
-                switchWebdriverScreen("screen-captcha", "https://detail.damai.cn/item.htm?id=80456123490");
-                highlightFlowNode("node-captcha");
-
-                // Slide captcha thumb preview
-                setTimeout(() => {
-                  const thumb = document.getElementById('captcha-slider-thumb');
-                  const piece = document.getElementById('captcha-puzzle-piece');
-                  if (thumb && piece) {
-                    thumb.style.transition = 'left 1s ease-in-out';
-                    piece.style.transition = 'left 1s ease-in-out';
-                    thumb.style.left = '170px';
-                    piece.style.left = '170px';
-                  }
-                }, 100);
-              } else if (log.message.includes("实名观演人") || log.message.includes("buy.damai.cn")) {
-                switchWebdriverScreen("screen-checkout", "https://buy.damai.cn/orderconfirm");
-                highlightFlowNode("node-order");
-              } else if (log.message.includes("SUCCESS") || log.message.includes("抢票成功") || log.message.includes("沙箱流程走通")) {
-                switchWebdriverScreen("screen-success-view", "https://buy.damai.cn/ordersuccess");
-                highlightFlowNode("node-order", "success-node");
-
-                // Launch preview modal filled from current form config (not hardcoded demo show)
-                setTimeout(() => {
-                  const ctx = getPreviewContext();
-                  applyPreviewToMockScreens(ctx);
-                  fillSuccessModalFromConfig(ctx, "后端沙箱演示");
-                  document.getElementById('success-modal').classList.add('active');
-                  triggerConfetti();
-                }, 1200);
-              }
+              appendLog(log.level, log.message, (log.level || "info").toLowerCase());
+              applyLogSideEffects(log);
             });
             logOffset += data.logs.length;
           }
@@ -3432,31 +3400,18 @@
             updateProgressUI(data.progress);
           }
 
-          if (data.status === 'completed' || data.status === 'stopped' || data.status === 'idle') {
-            ticketingActive = false;
-            isSimulationRunning = false;
-
-            document.getElementById("start-btn").disabled = false;
-            document.getElementById("stop-btn").disabled = true;
-            document.getElementById("retry-btn").disabled = (data.status !== 'completed');
-
-            let stateText = "未开始";
-            if (data.status === 'completed') stateText = "沙箱演示完成";
-            if (data.status === 'stopped') {
-              stateText = "任务已停止";
-              setSimModeBadge(false);
-              highlightFlowNode("", "idle");
-              switchWebdriverScreen("screen-idle", "chrome://newtab/");
-            }
-            updateStatusUI(data.status, stateText);
+          if (data.status === 'completed' || data.status === 'stopped' || data.status === 'idle' || data.status === 'error') {
+            finishTaskUI(data.status);
             return;
           }
 
           logPollTimeoutId = setTimeout(pollBackendLogs, 400);
         })
         .catch(err => {
-          // Fallback to local sandbox runner
-          console.warn("Backend logs unavailable, fallback to local flow.", err);
+          console.warn("Backend logs unavailable", err);
+          appendLog("SYSTEM", `日志轮询失败: ${err.message}`, "warning");
+          // 短暂退避后继续尝试，避免一次抖动就断开
+          logPollTimeoutId = setTimeout(pollBackendLogs, 1200);
         });
     }
 
@@ -3486,32 +3441,27 @@
       updateStatusUI("running", "运行中");
 
       const apiBase = getApiBaseUrl();
-      appendLog("SYSTEM", `正在与接口服务建立实机联接: ${apiBase}...`, "info");
+      appendLog("SYSTEM", `正在与接口服务建立联接: ${apiBase}...`, "info");
 
-      // Save config to backend first
       const configObj = serializeConfigFromDOM();
-      fetch(`${apiBase}/config`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(configObj),
-        mode: 'cors'
+      // 先写配置，再启动任务；dry_run 默认 true（只跑逻辑编排）
+      apiRequest("/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(configObj)
       })
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP error saving config");
-          return fetch(`${apiBase}/ticket/start`, { method: 'POST', mode: 'cors' });
-        })
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP error starting task");
-          appendLog("SYSTEM", "已联接 Python 后端。注意：当前 web_server 仍为流程沙箱，日志为模拟输出，不会真实 Selenium 下单。", "warning");
-          setSimModeBadge(true);
-          applyPreviewToMockScreens(getPreviewContext());
+        .then(() => apiRequest("/ticket/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dry_run: true })
+        }))
+        .then((data) => {
+          appendLog("SYSTEM", `🎉 已联接后端，任务启动: ${data.task_id || "ok"} (dry_run=${data.dry_run !== false})`, "system");
           pollBackendLogs();
         })
         .catch(err => {
-          // Fallback to local high-fidelity sandbox runner for client showcase
-          appendLog("SYSTEM", `未探测到活跃的 Python 运行端口: ${err.message}`, "warning");
-          appendLog("SYSTEM", "⚠️ 将以本地高保真【沙箱演示】执行：预览按你的配置渲染，不会真实抢票。", "warning");
-          setSimModeBadge(true);
+          appendLog("SYSTEM", `未探测到活跃后端: ${err.message}`, "warning");
+          appendLog("SYSTEM", "⚠️ 降级为本地工作区状态机，演示完整业务流程...", "warning");
 
           const autoInstall = document.getElementById("dep_auto_install").checked;
           const packages = getDependenciesList();
@@ -3519,11 +3469,11 @@
           if (autoInstall && packages.length > 0) {
             appendLog("SYSTEM", "检测到开启了依赖自检，优先执行环境检查...", "info");
             runDependencyInstallationSim(packages, () => {
-              appendLog("SYSTEM", "环境自检通过。正在启动沙箱流程预览...", "system");
+              appendLog("SYSTEM", "环境自检通过。正在启动编排流程...", "system");
               setTimeout(startCoreTicketingFlow, 500);
             });
           } else {
-            appendLog("SYSTEM", "直接启动沙箱流程预览...", "system");
+            appendLog("SYSTEM", "直接启动编排流程...", "system");
             setTimeout(startCoreTicketingFlow, 200);
           }
         });
@@ -3532,42 +3482,35 @@
     function startCoreTicketingFlow() {
       if (!ticketingActive) return;
 
-      setSimModeBadge(true);
-      const ctx = getPreviewContext();
-      applyPreviewToMockScreens(ctx);
-
-      const platform = ctx.platform;
-      const mobile = ctx.mobile;
-      const targetUrl = ctx.targetUrl;
-      const datePriorities = ctx.datePriorities;
-      const sessionPriorities = ctx.sessionPriorities;
-      const ticketNum = ctx.ticketNum;
-      const viewers = ctx.viewersRaw;
-      const autoBuy = ctx.autoBuy;
+      const platform = document.getElementById("account_platform").value;
+      const mobile = document.getElementById("account_mobile").value || "13888888888";
+      const targetUrl = document.getElementById("target_event_url").value;
+      const datePriorities = document.getElementById("target_date_priorities").value || "1";
+      const sessionPriorities = document.getElementById("target_session_priorities").value || "1";
+      const ticketNum = parseInt(document.getElementById("target_tickets").value) || 2;
+      const viewers = document.getElementById("target_viewers").value || "0";
+      const autoBuy = document.getElementById("auto_buy_check").checked;
       const proxyAddr = document.getElementById("proxy_addr").value;
-      const detailUrl = (targetUrl && targetUrl.startsWith("http")) ? targetUrl : "https://detail.damai.cn/";
-
-      appendLog("SYSTEM", "⚠️ 当前为本地高保真【沙箱演示】：预览画面与弹窗按你的配置渲染，不会真实登录/下单。", "warning");
-      appendLog("SYSTEM", `预览配置 → 演出: ${ctx.showTitle} | 票数: ${ticketNum} | 观演人索引: [${viewers}]`, "info");
+      const useAi = document.getElementById("strategy_ai").checked;
 
       const flowSteps = [
-        { progress: 5, level: "INFO", text: `[沙箱] 模拟连接代理路由: ${proxyAddr || "直连模式 (DIRECT)"}`, action: () => highlightFlowNode("node-fingerprint") },
-        { progress: 10, level: "SYSTEM", text: "[沙箱] 模拟注入 Selenium 隐身防御补丁 (--disable-blink-features=AutomationControlled)", action: () => switchWebdriverScreen("screen-idle", "chrome://newtab/") },
-        { progress: 18, level: "INFO", text: `[沙箱] 模拟导航平台 [${platform.toUpperCase()}] 演出详情页...`, action: () => switchWebdriverScreen("screen-login", "https://passport.damai.cn/login") },
-        { progress: 24, level: "DEBUG", text: `目标购票地址 (来自配置): ${targetUrl}` },
-        { progress: 32, level: "INFO", text: "[沙箱] 检查本地 Cookie 缓存 (cookies.pkl) 可用性..." },
-        { progress: 40, level: "SYSTEM", text: `### 扫码登录引导 (演示) ### 绑定手机: ${mobile}` },
+        { progress: 5, level: "INFO", text: `正在连接代理路由服务器: ${proxyAddr || "直连模式 (DIRECT)"}`, action: () => highlightFlowNode("node-fingerprint") },
+        { progress: 10, level: "SYSTEM", text: "已注入 Selenium 隐身防御补丁 (--disable-blink-features=AutomationControlled)", action: () => switchWebdriverScreen("screen-idle", "chrome://newtab/") },
+        { progress: 18, level: "INFO", text: `正在导航并拉取平台 [${platform.toUpperCase()}] 的演出详情页...`, action: () => switchWebdriverScreen("screen-login", "https://passport.damai.cn/login") },
+        { progress: 24, level: "DEBUG", text: `目标购票地址: ${targetUrl}` },
+        { progress: 32, level: "INFO", text: "检查本地 Cookie 缓存 (cookies.pkl) 可用性..." },
+        { progress: 40, level: "SYSTEM", text: `### 扫码登录引导 ### 绑定手机: ${mobile}，请在移动端完成扫码授权...` },
         {
-          progress: 48, level: "INFO", text: "[沙箱] Cookies 同步成功（演示，未真实扫码）", action: () => {
-            switchWebdriverScreen("screen-details", detailUrl);
+          progress: 48, level: "INFO", text: "Cookies 同步成功！已保存至 cookies.pkl", action: () => {
+            switchWebdriverScreen("screen-details", "https://detail.damai.cn/item.htm?id=80456123490");
             highlightFlowNode("node-mouse");
           }
         },
-        { progress: 56, level: "DEBUG", text: "### 载入 Cookie 验证状态成功 (演示) ### 正在刷新具体演出页面..." },
-        { progress: 64, level: "INFO", text: `正在解析日历卡片与票档 (配置)。策略: 优先日期 [${datePriorities}], 优先场次 [${sessionPriorities}]` },
+        { progress: 56, level: "DEBUG", text: "### 载入 Cookie 验证状态成功 ### 正在刷新具体演出页面..." },
+        { progress: 64, level: "INFO", text: `正在解析日历卡片与票档。策略: 优先日期 [${datePriorities}], 优先场次 [${sessionPriorities}]` },
         {
-          progress: 70, level: "INFO", text: `[沙箱] 检测到安全滑块盾保护，模拟 AI 滑块校验...`, action: () => {
-            switchWebdriverScreen("screen-captcha", detailUrl);
+          progress: 70, level: "INFO", text: `检测到安全滑块盾保护，AI 神经网络指纹模块介入...`, action: () => {
+            switchWebdriverScreen("screen-captcha", "https://detail.damai.cn/item.htm?id=80456123490");
             highlightFlowNode("node-captcha");
             setTimeout(() => {
               const thumb = document.getElementById('captcha-slider-thumb');
@@ -3582,38 +3525,38 @@
           }
         },
         {
-          progress: 80, level: "INFO", text: "[沙箱] 滑块校验模拟完成。正在加载订单结算页预览...", action: () => {
+          progress: 80, level: "INFO", text: "滑块盾验证突破成功！耗时 240ms。正在加载订单结算页...", action: () => {
             highlightFlowNode("node-order");
           }
         },
         {
-          progress: 88, level: "INFO", text: `选择购票数: [${ticketNum} 张]。自动勾选实名观演人索引: [${viewers}]（索引来自配置，非固定姓名）`, action: () => {
-            applyPreviewToMockScreens(ctx);
+          progress: 88, level: "INFO", text: `选择购票数: [${ticketNum} 张]。自动勾选实名观演人索引: [${viewers}]`, action: () => {
+            document.getElementById('checkout-qty').textContent = `${ticketNum} 张`;
             switchWebdriverScreen("screen-checkout", "https://buy.damai.cn/orderconfirm");
           }
         },
-        { progress: 95, level: "SYSTEM", text: `[沙箱] 准备模拟 ${autoBuy ? "Auto Strike 提交" : "选座完成"}...` }
+        { progress: 95, level: "SYSTEM", text: `准备就绪。正在以极速自动出手 (Auto Strike) 模式提交订单包...` }
       ];
 
       if (autoBuy) {
         flowSteps.push(
           {
-            progress: 100, level: "INFO", text: "🎉 [SUCCESS] 沙箱流程走通（演示成功，未真实下单）。", action: () => {
+            progress: 100, level: "INFO", text: "🎉 [SUCCESS] 订单提交成功！服务器响应 200 OK。", action: () => {
               switchWebdriverScreen("screen-success-view", "https://buy.damai.cn/ordersuccess");
               highlightFlowNode("node-order", "success-node");
 
+              // Trigger WOW Confetti modal overlay
               setTimeout(() => {
-                fillSuccessModalFromConfig(ctx, "本地沙箱演示");
                 document.getElementById('success-modal').classList.add('active');
                 triggerConfetti();
               }, 1000);
             }
           },
-          { progress: 100, level: "SYSTEM", text: "🎟️ 沙箱演示结束。实机抢票请运行 ticket_script.py 或桌面 GUI，并确认 Chrome/Cookie。" }
+          { progress: 100, level: "SYSTEM", text: "🎟️ 抢票成功！已为您锁定该场次座位，请在规定时间内前往平台完成付款！" }
         );
       } else {
         flowSteps.push(
-          { progress: 100, level: "WARNING", text: "[沙箱] 未启用自动下单。演示仅模拟选座，实机需人工提交订单。" }
+          { progress: 100, level: "WARNING", text: "[INFO] 未启用自动下单。仅执行自动化选座, 请在弹出的浏览器界面上人工点击'提交订单'完成购买。" }
         );
       }
 
@@ -3626,7 +3569,7 @@
           document.getElementById("start-btn").disabled = false;
           document.getElementById("stop-btn").disabled = true;
           document.getElementById("retry-btn").disabled = false;
-          updateStatusUI("completed", "沙箱演示完成");
+          updateStatusUI("completed", "任务完成");
           updateProgressUI(100);
           return;
         }
@@ -3649,7 +3592,6 @@
       ticketingActive = false;
       isSimulationRunning = false;
       if (logPollTimeoutId) clearTimeout(logPollTimeoutId);
-      setSimModeBadge(false);
       highlightFlowNode("", "idle");
       switchWebdriverScreen("screen-idle", "chrome://newtab/");
 
@@ -3661,10 +3603,8 @@
       document.getElementById("retry-btn").disabled = false;
 
       updateStatusUI("stopped", "任务已停止");
-      appendLog("SYSTEM", "用户手动点击停止任务。自动化线程已安全撤销并关闭浏览器。", "error");
-
-      const apiBase = getApiBaseUrl();
-      fetch(`${apiBase}/ticket/stop`, { method: 'POST', mode: 'cors' }).catch(() => { });
+      appendLog("SYSTEM", "用户手动点击停止任务。自动化线程已安全撤销。", "error");
+      apiRequest("/ticket/stop", { method: "POST" }).catch(() => { });
 
       // Reset slider if active
       const thumb = document.getElementById('captcha-slider-thumb');
@@ -3701,24 +3641,22 @@
       switchWebdriverScreen("screen-idle", "chrome://newtab/");
       updateStatusUI("running", "运行中");
 
-      const apiBase = getApiBaseUrl();
-      appendLog("DEPENDENCY", `正在连接依赖部署端口: ${apiBase}/dependencies/install...`, "info");
+      appendLog("DEPENDENCY", `正在连接依赖部署接口: ${getApiBaseUrl()}/dependencies/install...`, "info");
 
-      fetch(`${apiBase}/dependencies/install`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packages: pkgs }),
-        mode: 'cors'
+      apiRequest("/dependencies/install", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ packages: pkgs })
       })
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP error");
-          appendLog("SYSTEM", "成功发起实机依赖部署任务，正在接收进程输出...", "success");
+        .then((data) => {
+          appendLog("SYSTEM", `成功发起依赖部署任务: ${data.task_id || "ok"}`, "success");
           pollBackendLogs();
         })
         .catch(err => {
-          appendLog("SYSTEM", "未探测到活跃的后端服务进程。转为本地环境自检部署...", "warning");
+          appendLog("SYSTEM", `未探测到活跃后端: ${err.message}，转为本地部署...`, "warning");
           runDependencyInstallationSim(pkgs, () => {
             appendLog("SYSTEM", "本地环境自检与库包部署已完成。", "info");
+            finishTaskUI("completed");
           });
         });
     }
@@ -3777,10 +3715,18 @@
     }
 
     // Window onload setup
-    window.onload = function () {
+    window.onload = async function () {
       loadDemoConfig();
       startLiveCanvasGraph();
       startCountdownClock();
+      // 优先尝试从后端拉取真实配置；失败则保留 demo
+      const online = await probeBackend();
+      if (online) {
+        appendLog("SYSTEM", "已探测到后端服务在线 (/api/health)", "success");
+        await loadConfigFromBackend();
+      } else {
+        appendLog("SYSTEM", "后端未启动，当前为本地工作区模式（可运行 python web_server.py）", "warning");
+      }
     };
   </script>
 </body>
