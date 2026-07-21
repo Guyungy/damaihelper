@@ -82,7 +82,7 @@ class DashboardHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             with state_lock:
                 stop_flag = True
                 status = "stopped"
-            add_log("SYSTEM", "收到用户主动终止任务指令，正在安全关闭抢票进程与浏览器资源...", "ERROR")
+            add_log("SYSTEM", "收到用户主动终止任务指令，正在安全关闭抢票进程与浏览器资源...")
             self.wfile.write(json.dumps({"status": "stopped"}).encode('utf-8'))
 
         elif self.path == '/api/dependencies/install':
@@ -181,7 +181,7 @@ def dependency_install_worker_thread(packages):
             status = "idle"
         return
 
-    add_log("SYSTEM", "开始进行环境运行包依赖部署及版本自检...", "INFO")
+    add_log("SYSTEM", "开始进行环境运行包依赖部署及版本自检...")
     step_count = 0
     total_steps = total_packages * len(dependencySteps)
 
@@ -202,19 +202,68 @@ def dependency_install_worker_thread(packages):
     with state_lock:
         progress = 100
         status = "completed"
-    add_log("SYSTEM", "环境依赖安装及配置成功！", "INFO")
+    add_log("SYSTEM", "环境依赖安装及配置成功！")
 
 def ticketing_worker_thread():
     global status, progress, stop_flag
-    
+
+    # Load user config so logs reflect real settings (still a sandbox — no real purchase)
+    target_url = ""
+    tickets = 2
+    viewers = [0, 1]
+    platform = "damai"
+    mobile = ""
+    date_priorities = [1]
+    session_priorities = [1]
+    auto_buy = True
+    try:
+        config_file = "config/config.json"
+        if not os.path.exists(config_file):
+            config_file = "config/demo_config.json"
+        if os.path.exists(config_file):
+            with open(config_file, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+            auto_buy = cfg.get("strategy", {}).get("auto_strike", True)
+            acc = (cfg.get("accounts") or {}).get("acc_primary") or {}
+            platform = acc.get("platform") or platform
+            creds = acc.get("credentials") or {}
+            mobile = creds.get("mobile") or ""
+            target = acc.get("target") or {}
+            target_url = target.get("event_url") or ""
+            tickets = target.get("tickets") or tickets
+            viewers = target.get("viewers") or viewers
+            priorities = target.get("priorities") or {}
+            date_priorities = priorities.get("date") or date_priorities
+            session_priorities = priorities.get("session") or session_priorities
+    except Exception as e:
+        print("Read config err:", e)
+
+    add_log(
+        "WARNING",
+        "当前为 Web 控制台【沙箱演示】：不会打开真实浏览器、不会真实下单。"
+        " 预览画面中的城市/姓名若曾写死为示例文案，已改为按 config 渲染。"
+        " 实机请运行 ticket_script.py 或桌面 GUI。",
+    )
+    add_log(
+        "INFO",
+        f"读取配置 → 平台={platform} 手机={mobile or '未填写'} "
+        f"票数={tickets} 观演人索引={viewers} "
+        f"日期优先级={date_priorities} 场次优先级={session_priorities}",
+    )
+    if target_url:
+        add_log("INFO", f"目标演出链接 (来自配置): {target_url}")
+    else:
+        add_log("WARNING", "配置中未填写 target.event_url，预览将使用占位标题。")
+
     steps = [
-        (5, "INFO", "正在连接代理路由服务器..."),
-        (10, "SYSTEM", "已注入 Selenium 隐身防御补丁 (--disable-blink-features=AutomationControlled)"),
-        (15, "INFO", "正在初始化 Chrome WebDriver 浏览器控制端..."),
+        (5, "INFO", "[沙箱] 模拟连接代理路由服务器..."),
+        (10, "SYSTEM", "[沙箱] 模拟注入 Selenium 隐身防御补丁 (--disable-blink-features=AutomationControlled)"),
+        (15, "INFO", "[沙箱] 模拟初始化 Chrome WebDriver（未真实启动浏览器）..."),
     ]
 
     for p, lvl, msg in steps:
-        if stop_flag: return
+        if stop_flag:
+            return
         with state_lock:
             progress = p
         add_log(lvl, msg)
@@ -223,56 +272,65 @@ def ticketing_worker_thread():
     # Core Environment Dependency Check
     chrome_ok = True
     try:
-        import selenium
-        from selenium import webdriver
+        import selenium  # noqa: F401
+        from selenium import webdriver  # noqa: F401
     except ImportError:
         chrome_ok = False
-        add_log("WARNING", "运行环境中未检测到 [selenium] 库。将使用内置的防指纹检测核心接托管。")
-    
-    # ChromeDriver Check
+        add_log("WARNING", "运行环境中未检测到 [selenium] 库。沙箱演示可继续，实机抢票需先安装依赖。")
+
     driver_file = "chromedriver.exe" if sys.platform.startswith("win") else "chromedriver"
     if not os.path.exists(driver_file):
-        add_log("WARNING", f"本地根目录下未检测到驱动 [{driver_file}]。将自动定位系统默认路径的 Chrome 浏览器内核。")
+        add_log(
+            "WARNING",
+            f"本地根目录下未检测到驱动 [{driver_file}]。沙箱演示不依赖驱动；实机将尝试系统 Chrome。",
+        )
+    if chrome_ok:
+        add_log("DEBUG", "selenium 已安装（本线程仍不执行真实抢票）。")
 
     flow = [
-        (25, "INFO", "正在解析账户登录 Cookies 凭证信息 (cookies.pkl)..."),
-        (32, "WARNING", "本地未检测到 cookies.pkl 授权缓存。正在启动扫码登录安全防护窗口..."),
-        (40, "SYSTEM", "### 扫码登录引导 ### 请在弹出的浏览器界面中扫描二维码以同步大麦网账户授权..."),
-        (48, "INFO", "同步大麦网 Cookies 凭证成功，已持久化写入本地 cookies.pkl"),
-        (55, "DEBUG", "### 载入 Cookie 验证状态成功 ### 正在向购票目标页面进行跳转..."),
-        (62, "INFO", "正在解析日历票档卡片... 读取场次与日期优先级列表"),
-        (72, "INFO", "正在检索余票状态... 余票可用！正在勾选对应的实名观演人复选框"),
-        (85, "SYSTEM", "### 极速自动出手 (Auto Strike) ### 提交抢购订单包中...")
+        (25, "INFO", "[沙箱] 模拟解析账户 Cookies (cookies.pkl)..."),
+        (32, "WARNING", "[沙箱] 演示路径：若无 cookies.pkl，实机将弹出扫码登录窗口"),
+        (40, "SYSTEM", f"### 扫码登录引导 (演示) ### 绑定手机: {mobile or '未填写'}"),
+        (48, "INFO", "[沙箱] 模拟 Cookies 同步成功（未真实扫码）"),
+        (55, "DEBUG", "### 载入 Cookie 验证状态成功 (演示) ### 正在向购票目标页面进行跳转..."),
+        (
+            62,
+            "INFO",
+            f"正在解析日历票档卡片... 日期优先级={date_priorities} 场次优先级={session_priorities}",
+        ),
+        (
+            72,
+            "INFO",
+            f"正在检索余票状态... 模拟勾选实名观演人索引 {viewers}（索引来自配置，非固定姓名如「张三」）",
+        ),
+        (85, "SYSTEM", "### 极速自动出手 (Auto Strike · 沙箱) ### 模拟提交订单包中..."),
     ]
 
     for p, lvl, msg in flow:
-        if stop_flag: return
+        if stop_flag:
+            return
         with state_lock:
             progress = p
         add_log(lvl, msg)
         time.sleep(0.7)
 
-    # Read configuration auto_buy settings
-    auto_buy = True
-    try:
-        config_file = "config/config.json"
-        if os.path.exists(config_file):
-            with open(config_file, "r", encoding="utf-8") as f:
-                cfg = json.load(f)
-                auto_buy = cfg.get("strategy", {}).get("auto_strike", True)
-    except Exception as e:
-        print("Read config err:", e)
-
-    if stop_flag: return
+    if stop_flag:
+        return
     with state_lock:
         progress = 100
         status = "completed"
 
     if auto_buy:
-        add_log("INFO", "🎉 [SUCCESS] 订单提交成功！大麦接口返回状态码 200 OK。")
-        add_log("SYSTEM", "🎟️ 抢票成功！已为您锁定该场次座位，请在规定时间内前往平台完成付款！")
+        add_log("INFO", "🎉 [SUCCESS] 沙箱流程走通（演示成功，未真实下单 / 未扣款）。")
+        add_log(
+            "SYSTEM",
+            "🎟️ 沙箱演示结束。实机抢票请运行: python ticket_script.py 或桌面 GUI，并确认 Chrome/Cookie 就绪。",
+        )
     else:
-        add_log("WARNING", "[INFO] 未启用自动秒杀下单。已为您执行自动化选座，请在弹出的浏览器界面上手工提交订单。")
+        add_log(
+            "WARNING",
+            "[沙箱] 未启用自动秒杀下单。演示仅模拟选座；实机需在浏览器中人工提交订单。",
+        )
 
 def main():
     # Force working directory to the directory containing this script
