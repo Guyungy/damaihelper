@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="173" height="20" role="img" aria-label="platform: Win / macOS">
+  <linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient>
+  <mask id="m"><rect width="173" height="20" rx="3" fill="#fff"/></mask>
+  <g mask="url(#m)">
+    <rect width="76" height="20" fill="#555"/>
+    <rect x="76" width="97" height="20" fill="#0078D4"/>
+    <rect width="173" height="20" fill="url(#s)"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11">
+    <text x="38.0" y="14">platform</text>
+    <text x="124.5" y="14">Win / macOS</text>
+  </g>
+</svg>

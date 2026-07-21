@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5f7fb"/><stop offset="100%" stop-color="#eef2f8"/></linearGradient>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="120%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0b1220" flood-opacity="0.08"/></filter>
+  </defs>
+  <rect width="1200" height="680" fill="url(#bg)"/>
+  <rect width="220" height="680" fill="#001529"/>
+  <rect x="24" y="22" width="28" height="28" rx="8" fill="#1677ff"/>
+  <text x="62" y="42" fill="#fff" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="16" font-weight="700">DamaiHelper</text>
+  <g font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="14" fill="#ffffffa6">
+    <rect x="12" y="90" width="196" height="40" rx="8" fill="#1677ff"/>
+    <text x="36" y="115" fill="#fff">Overview</text>
+    <text x="36" y="165">Config</text>
+    <text x="36" y="215">Tasks</text>
+    <text x="36" y="265">YOLO / CUDA</text>
+  </g>
+  <rect x="220" width="980" height="64" fill="#fff"/>
+  <text x="248" y="40" fill="#1f1f1f" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" font-weight="600">Dashboard</text>
+  <rect x="980" y="20" width="88" height="24" rx="12" fill="#f6ffed" stroke="#b7eb8f"/>
+  <text x="992" y="37" fill="#389e0d" font-size="12" font-family="Segoe UI, sans-serif">API Online</text>
+  <rect x="1080" y="20" width="72" height="24" rx="12" fill="#e6f4ff" stroke="#91caff"/>
+  <text x="1094" y="37" fill="#1677ff" font-size="12" font-family="Segoe UI, sans-serif">Idle</text>
+  <g filter="url(#sh)" font-family="Segoe UI, Microsoft YaHei, sans-serif">
+    <rect x="248" y="96" width="210" height="110" rx="12" fill="#fff"/>
+    <text x="268" y="128" fill="#8c8c8c" font-size="13">Backend</text>
+    <text x="268" y="168" fill="#3f8600" font-size="28" font-weight="700">Online</text>
+    <rect x="478" y="96" width="210" height="110" rx="12" fill="#fff"/>
+    <text x="498" y="128" fill="#8c8c8c" font-size="13">Progress</text>
+    <text x="498" y="168" fill="#1f1f1f" font-size="28" font-weight="700">100%</text>
+    <rect x="708" y="96" width="210" height="110" rx="12" fill="#fff"/>
+    <text x="728" y="128" fill="#8c8c8c" font-size="13">CUDA</text>
+    <text x="728" y="168" fill="#1677ff" font-size="28" font-weight="700">Ready</text>
+    <rect x="938" y="96" width="210" height="110" rx="12" fill="#fff"/>
+    <text x="958" y="128" fill="#8c8c8c" font-size="13">YOLO</text>
+    <text x="958" y="168" fill="#1f1f1f" font-size="28" font-weight="700">Mock</text>
+    <rect x="248" y="230" width="560" height="380" rx="12" fill="#fff"/>
+    <text x="272" y="268" fill="#1f1f1f" font-size="16" font-weight="600">Local AI Environment</text>
+    <text x="272" y="310" fill="#595959" font-size="14">Python   3.10+</text>
+    <text x="272" y="345" fill="#595959" font-size="14">GPU      NVIDIA RTX (auto-detect)</text>
+    <text x="272" y="380" fill="#595959" font-size="14">PyTorch  CUDA wheel via install_deps</text>
+    <text x="272" y="415" fill="#595959" font-size="14">API      /health  /ai/*  /ticket/*</text>
+    <rect x="272" y="450" width="120" height="28" rx="6" fill="#e6f4ff"/>
+    <text x="288" y="469" fill="#1677ff" font-size="12">CUDA auto</text>
+    <rect x="832" y="230" width="316" height="380" rx="12" fill="#fff"/>
+    <text x="856" y="268" fill="#1f1f1f" font-size="16" font-weight="600">Quick Start</text>
+    <rect x="856" y="300" width="268" height="44" rx="8" fill="#1677ff"/>
+    <text x="920" y="328" fill="#fff" font-size="14">Start Task Runner</text>
+    <rect x="856" y="360" width="268" height="44" rx="8" fill="#fff" stroke="#d9d9d9"/>
+    <text x="948" y="388" fill="#1f1f1f" font-size="14">Edit Config</text>
+    <rect x="856" y="420" width="268" height="44" rx="8" fill="#fff" stroke="#d9d9d9"/>
+    <text x="932" y="448" fill="#1f1f1f" font-size="14">YOLO / CUDA</text>
+    <text x="856" y="520" fill="#8c8c8c" font-size="12">python tools/install_deps.py</text>
+    <text x="856" y="545" fill="#8c8c8c" font-size="12">python web_server.py</text>
+  </g>
+</svg>

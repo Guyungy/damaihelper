@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="110" height="20" role="img" aria-label="license: MIT">
+  <linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient>
+  <mask id="m"><rect width="110" height="20" rx="3" fill="#fff"/></mask>
+  <g mask="url(#m)">
+    <rect width="69" height="20" fill="#555"/>
+    <rect x="69" width="41" height="20" fill="#2ea44f"/>
+    <rect width="110" height="20" fill="url(#s)"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11">
+    <text x="34.5" y="14">license</text>
+    <text x="89.5" y="14">MIT</text>
+  </g>
+</svg>
