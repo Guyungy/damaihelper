@@ -1,2 +1,23 @@
+# 模型权重（体积大，不入库）
+models/*.pt
+models/*.onnx
+models/*.engine
+
+# 前端
+web-ui/node_modules/
+web-ui/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# 运行产物
 *.pkl
+cookies.pkl
+logs/*.log
 .DS_Store
+.idea/
+.vscode/
