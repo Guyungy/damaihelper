@@ -24,6 +24,18 @@
 
 ---
 
+## ⭐ Star History
+
+<div align="center">
+  <a href="https://star-history.dera.page/#Guyungy/damaihelper&type=date">
+    <img src="https://star-history.dera.page/svg?repos=Guyungy/damaihelper&type=Date" alt="Star History Chart" />
+  </a>
+</div>
+
+---
+
+
+
 ## ✨ 功能特性
 
 | 模块 | 说明 |
